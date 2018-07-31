@@ -1,7 +1,7 @@
 import time
 from subprocess import CalledProcessError, check_output
 
-from pi_mgmt import turn_on_led_green, turn_off_led_green
+from .pi_mgmt import turn_on_led_green, turn_off_led_green
 
 
 def set_vpn_params(vpn_server, user_id, user_psk):

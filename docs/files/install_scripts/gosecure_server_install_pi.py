@@ -7,12 +7,12 @@ from subprocess import call, check_output
 
 
 def update_os():
-    print "goSecure_Server_Script - Update OS\n"
+    print("goSecure_Server_Script - Update OS\n")
     call("sudo apt-get update -y", shell=True)
     call("sudo apt-get upgrade -y", shell=True)
 
 def enable_ip_forward():
-    print "goSecure_Server_Script - Enable IP Forwarding\n"
+    print("goSecure_Server_Script - Enable IP Forwarding\n")
     call("sudo sh -c 'echo 1 > /proc/sys/net/ipv4/ip_forward'", shell=True)
 
     with open("/etc/sysctl.conf") as fin:
@@ -30,7 +30,7 @@ def enable_ip_forward():
 
 
 def configure_firewall():
-    print "goSecure_Server_Script - Configure Firewall\n"
+    print("goSecure_Server_Script - Configure Firewall\n")
     call("sudo mkdir /etc/iptables/", shell=True)
 
     iptables_rules = textwrap.dedent("""\
@@ -79,7 +79,7 @@ def configure_firewall():
 
 
 def enable_hardware_random():
-    print "goSecure_Server_Script - Enable Hardware Random\n"
+    print("goSecure_Server_Script - Enable Hardware Random\n")
     pi_hardware_version = check_output(["cat", "/proc/cpuinfo"]).split("\n")[-4]
 
     # if Pi 2
@@ -108,7 +108,7 @@ def enable_hardware_random():
 
 
 def install_strongswan():
-    print "goSecure_Client_Script - Install strongSwan\n"
+    print("goSecure_Client_Script - Install strongSwan\n")
     install_strongswan_commands = textwrap.dedent("""\
         sudo apt-get install -y libssl-dev libpam-dev
         wget -P /tmp https://download.strongswan.org/strongswan-5.5.0.tar.gz
@@ -122,7 +122,7 @@ def install_strongswan():
 
 
 def configure_strongswan(client_id, client_psk):
-    print "goSecure_Server_Script - Configure strongSwan\n"
+    print("goSecure_Server_Script - Configure strongSwan\n")
 
     # https://www.blackhole-networks.com/IKE_Modes/ikev1-aggressive-weakness.html
     strongswan_conf = textwrap.dedent("""\
@@ -198,7 +198,7 @@ def configure_strongswan(client_id, client_psk):
     time.sleep(30)
 
 def start_strongswan():
-    print "goSecure_Server_Script - Start strongSwan\n"
+    print("goSecure_Server_Script - Start strongSwan\n")
 
     # start strongSwan
     call("sudo ipsec start", shell=True)
@@ -215,9 +215,9 @@ def main():
     cmdargs = str(sys.argv)
 
     if len(sys.argv) != 3:
-        print textwrap.dedent("""\
+        print(textwrap.dedent("""\
             Syntax is: sudo python gosecure_server_install_pi.py <server_id> <client1_id> "<client1_psk>"
-            Example: sudo python gosecure_server_install_pi.py vpn.d2.local client1.d2.local "mysupersecretpsk"\n""")
+            Example: sudo python gosecure_server_install_pi.py vpn.d2.local client1.d2.local "mysupersecretpsk"\n"""))
         exit()
 
     client_id = str(sys.argv[1])

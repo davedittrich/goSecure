@@ -6,11 +6,11 @@ from subprocess import call
 
 
 def update_os():
-    print "goSecure_Server_Script - Update OS\n"
+    print("goSecure_Server_Script - Update OS\n")
     call("sudo yum update -y", shell=True)
 
 def enable_ip_forward():
-    print "goSecure_Server_Script - Enable IP Forward\n"
+    print("goSecure_Server_Script - Enable IP Forward\n")
     with open("/etc/sysctl.conf") as fin:
         lines = fin.readlines()
 
@@ -26,7 +26,7 @@ def enable_ip_forward():
 
 
 def configure_firewall():
-    print "goSecure_Server_Script - Configure Firewall\n"
+    print("goSecure_Server_Script - Configure Firewall\n")
     iptables_rules = textwrap.dedent("""\
         # Firewall configuration written by system-config-firewall
         # Manual customization of this file is not recommended.
@@ -65,7 +65,7 @@ def configure_firewall():
 
 
 def install_strongswan():
-    print "goSecure_Server_Script - Install strongSwan\n"
+    print("goSecure_Server_Script - Install strongSwan\n")
     install_strongswan_commands = textwrap.dedent("""\
         sudo yum groupinstall -y "Development Tools"
         sudo yum install -y unzip
@@ -80,7 +80,7 @@ def install_strongswan():
         call(command, shell=True)
 
 def configure_strongswan(client_id, client_psk):
-    print "goSecure_Server_Script - Configure strongSwan\n"
+    print("goSecure_Server_Script - Configure strongSwan\n")
 
     # https://www.blackhole-networks.com/IKE_Modes/ikev1-aggressive-weakness.html
     strongswan_conf = textwrap.dedent("""\
@@ -143,7 +143,7 @@ def configure_strongswan(client_id, client_psk):
     call(["sudo", "service", "network", "restart"])
 
 def start_strongswan():
-    print "goSecure_Server_Script - Start strongSwan\n"
+    print("goSecure_Server_Script - Start strongSwan\n")
     call(["sudo", "ipsec", "start"])
     call('sudo echo "ipsec start" >> /etc/rc.d/rc.local', shell=True)
 
@@ -151,9 +151,9 @@ def main():
     cmdargs = str(sys.argv)
 
     if len(sys.argv) != 3:
-        print textwrap.dedent("""\
+        print(textwrap.dedent("""\
             Syntax is: sudo python gosecure_server_install.py <server_id> <client1_id> "<client1_psk>"
-            Example: sudo python gosecure_server_install.py vpn.d2.local client1.d2.local "mysupersecretpsk"\n""")
+            Example: sudo python gosecure_server_install.py vpn.d2.local client1.d2.local "mysupersecretpsk"\n"""))
         exit()
 
     client_id = str(sys.argv[1])

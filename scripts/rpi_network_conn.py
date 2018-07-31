@@ -1,8 +1,8 @@
 import time
 from subprocess import CalledProcessError, check_output, Popen
 
-import urllib2
-import wifi_captive_portal
+import urllib.request, urllib.error, urllib.parse
+from . import wifi_captive_portal
 
 
 def get_wifi_list():
@@ -70,9 +70,9 @@ def add_wifi(wifi_ssid, wifi_key):
 
 def internet_status():
     try:
-        response = urllib2.urlopen("https://aws.amazon.com", timeout=1)
+        response = urllib.request.urlopen("https://aws.amazon.com", timeout=1)
         return True
-    except urllib2.URLError as err:
+    except urllib.error.URLError as err:
         pass
     return False
 
