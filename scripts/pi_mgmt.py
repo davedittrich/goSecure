@@ -20,7 +20,7 @@ def start_ssh_service():
 def update_client():
     update_user_interface_commands = textwrap.dedent("""\
         sudo mv /home/pi/goSecure_Web_GUI /home/pi/goSecure_Web_GUI.old
-        wget -P /home/pi/. https://github.com/iadgov/goSecure/archive/master.zip
+        wget -P /home/pi/. https://github.com/davedittrich/goSecure/archive/master.zip
         unzip -d /home/pi/. /home/pi/master.zip
         rm /home/pi/master.zip
         sudo mv /home/pi/goSecure-master /home/pi/goSecure_Web_GUI
