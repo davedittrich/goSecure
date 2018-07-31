@@ -6,7 +6,7 @@ import pickle
 import time
 from functools import wraps
 
-import flask.ext.login as flask_login
+import flask_login as flask_login
 from flask import (
     Flask, render_template, request, Response, flash, redirect, url_for)
 
