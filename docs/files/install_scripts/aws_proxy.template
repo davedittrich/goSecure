@@ -1,0 +1,475 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Mappings": {
+        "RegionMap": {
+            "us-east-1": {
+                "64": "ami-6869aa05"
+            },
+            "us-west-1": {
+                "64": "ami-31490d51"
+            },
+            "us-west-2": {
+                "64": "ami-7172b611"
+            }, 
+            "ap-south-1": {
+                "64": "ami-ffbdd790"
+            },
+            "ap-northeast-2": {
+                "64": "ami-2b408b45"
+            },
+            "ap-southeast-1": {
+                "64": "ami-a59b49c6"
+            },
+           "ap-southeast-2": {
+                "64": "ami-dc361ebf"
+            },
+            "ap-northeast-1": {
+                "64": "ami-374db956"
+            },
+            "eu-central-1": {
+                "64": "ami-ea26ce85"
+            },
+            "eu-west-1": {
+                "64": "ami-f9dd458a"
+            },
+            "sa-east-1": {
+                "64": "ami-6dd04501"
+            }
+        }
+    },
+    "Parameters": {
+        "InstanceType": {
+            "Description": "goSecure Server instance type",
+            "Type": "String",
+            "Default": "t2.micro",
+            "AllowedValues": ["t2.micro", "t2.small", "t2.medium", "t2.large", "c4.large", "c4.xlarge", "c4.2xlarge", "c4.4xlarge", "c4.8xlarge"],
+            "ConstraintDescription": "must be a valid EC2 instance type."
+        },
+        "KeyName": {
+            "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instances",
+            "Type": "AWS::EC2::KeyPair::KeyName",
+            "ConstraintDescription": "must be the name of an existing EC2 KeyPair."
+        },
+        "ClientId": {
+            "Default": "client1@d2.local",
+            "Description": "goSecure Client ID",
+            "Type": "String",
+            "MinLength": "4",
+            "MaxLength": "64",
+            "AllowedPattern": "^[A-Za-z0-9@.]*$",
+            "ConstraintDescription": "Must contain only alphanumeric characters or at symbol or period."
+        },
+        "Client0Psk": {
+            "Default": "\"mysupersecretpsk\"",
+            "Description": "The first client's pre-shared key.",
+            "Type": "String",
+            "MinLength": "16",
+            "MaxLength": "128",
+            "NoEcho": "True",
+            "AllowedPattern": "^\"[A-Za-z0-9!@#$%^&*(>)<=_-]*\"$",
+            "ConstraintDescription": "Must contain only alphanumeric characters or certain symbols. Must start and end in a double quote."
+        }
+    },
+    "Resources": {
+        "goSecureProxyVPC": {
+            "Type": "AWS::EC2::VPC",
+            "Properties": {
+                "CidrBlock": "172.16.0.0/16",
+                "InstanceTenancy": "default",
+                "EnableDnsSupport": "true",
+                "EnableDnsHostnames": "true",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "goSecure_Proxy-VPC"
+          }
+        ]
+            }
+        },
+        "goSecureProxySubnet": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "CidrBlock": "172.16.150.0/24",
+                "AvailabilityZone": {
+                    "Fn::Select": ["0", {
+                        "Fn::GetAZs": { "Ref" : "AWS::Region" }
+                    }]
+                },
+                "VpcId": {
+                    "Ref": "goSecureProxyVPC"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "goSecure_Proxy-Subnet"
+          }
+        ]
+            }
+        },
+        "goSecureProxyIG": {
+            "Type": "AWS::EC2::InternetGateway",
+            "Properties": {
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "goSecure_Proxy-Internet_Gateway"
+          }
+        ]
+            }
+        },
+        "goSecureProxyDHCP": {
+            "Type": "AWS::EC2::DHCPOptions",
+            "Properties": {
+                "DomainName": {
+                    "Fn::Join": [
+                "",
+                [
+                            {
+                                "Ref": "AWS::Region"
+                    },
+                    ".compute.internal"
+                ]
+            ]
+                },
+                "DomainNameServers": [
+          "AmazonProvidedDNS"
+        ]
+            }
+        },
+        "goSecureProxyNACL": {
+            "Type": "AWS::EC2::NetworkAcl",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "goSecureProxyVPC"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "goSecure_Proxy-Network_ACL"
+          }
+        ]
+            }
+        },
+        "goSecureProxyRT1": {
+            "Type": "AWS::EC2::RouteTable",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "goSecureProxyVPC"
+                }
+            }
+        },
+        "goSecureProxyRT2": {
+            "Type": "AWS::EC2::RouteTable",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "goSecureProxyVPC"
+                }
+            }
+        },
+        "goSecureProxyEIP": {
+            "Type": "AWS::EC2::EIP",
+            "DependsOn": [
+        "gw4"
+      ],
+            "Properties": {
+                "Domain": "vpc"
+            }
+        },
+        "goSecureProxyServerInstance": {
+            "Type": "AWS::EC2::Instance",
+            "DependsOn": [
+        "goSecureProxyEIP"
+      ],
+            "Metadata" : {
+                "Comment1" : "Configure the bootstrap helpers to install wget and unzip",
+
+                "AWS::CloudFormation::Init" : {
+                  "configSets" : {
+                    "InstallAndRun" : [ "Install", "Configure" ]
+                  },
+
+                  "Install" : {
+                    "packages" : {
+                      "yum" : {
+                        "wget"  : []
+                      }
+                    },
+                    "files" : {
+                      "/home/ec2-user/gosecure-server-setup" : {
+                        "content" : { "Fn::Join" : [ "", [
+                          "#!/bin/bash -xe\n",
+                          "wget -P /home/ec2-user/ https://davedittrich.github.io/goSecure/files/install_scripts/gosecure_server_install.py\n",
+                          "python /home/ec2-user/gosecure_server_install.py", " ", { "Ref" : "ClientId" }, " ", { "Ref" : "Client0Psk" }, "\n"
+                        ]]},
+                        "mode" : "000500",
+                        "owner" : "root",
+                        "group" : "root"
+                      },
+                      "/etc/cfn/cfn-hup.conf" : {
+                        "content" : { "Fn::Join" : ["", [
+                          "[main]\n",
+                          "stack=", { "Ref" : "AWS::StackId" }, "\n",
+                          "region=", { "Ref" : "AWS::Region" }, "\n"
+                        ]]},
+                        "mode"    : "000400",
+                        "owner"   : "root",
+                        "group"   : "root"
+                      },
+                      "/etc/cfn/hooks.d/cfn-auto-reloader.conf" : {
+                        "content": { "Fn::Join" : ["", [
+                          "[cfn-auto-reloader-hook]\n",
+                          "triggers=post.update\n",
+                          "path=Resources.goSecureProxyServerInstance.Metadata.AWS::CloudFormation::Init\n",
+                          "action=/opt/aws/bin/cfn-init -v ",
+                          "         --stack ", { "Ref" : "AWS::StackName" },
+                          "         --resource goSecureProxyServerInstance ",
+                          "         --configsets InstallAndRun ",
+                          "         --region ", { "Ref" : "AWS::Region" }, "\n",
+                          "runas=root\n"
+                        ]]}
+                      }
+                    },
+                    "services" : {
+                      "sysvinit" : {
+                        "cfn-hup" : { "enabled" : "true", "ensureRunning" : "true",
+                                      "files" : ["/etc/cfn/cfn-hup.conf", "/etc/cfn/hooks.d/cfn-auto-reloader.conf"]}
+                      }
+                    }
+                  },
+
+                  "Configure" : {
+                    "commands" : {
+                      "01_run_goSecure_server_setup_script" : {
+                        "command" : "/home/ec2-user/gosecure-server-setup"
+                      }
+                    }
+                  }
+                }
+              },
+            "Properties": {
+                "DisableApiTermination": "false",
+                "InstanceInitiatedShutdownBehavior": "stop",
+                "ImageId": {
+                   "Fn::FindInMap": ["RegionMap", {
+                       "Ref": "AWS::Region"
+                   }, "64"]
+                },
+                "InstanceType": {
+                    "Ref": "InstanceType"
+                },
+                "KeyName": {
+                    "Ref": "KeyName"
+                },
+                "UserData": { "Fn::Base64" : { "Fn::Join" : ["", [
+                     "#!/bin/bash -xe\n",
+
+                     "# Install the files and packages from the metadata\n",
+                     "/opt/aws/bin/cfn-init -v ",
+                     "         --stack ", { "Ref" : "AWS::StackName" },
+                     "         --resource goSecureProxyServerInstance ",
+                     "         --configsets InstallAndRun ",
+                     "         --region ", { "Ref" : "AWS::Region" }, "\n",
+
+                     "# Signal the status from cfn-init\n",
+                     "/opt/aws/bin/cfn-signal -e $? ",
+                     "         --stack ", { "Ref" : "AWS::StackName" },
+                     "         --resource goSecureProxyServerInstance ",
+                     "         --region ", { "Ref" : "AWS::Region" }, "\n"
+                ]]}},
+                "Monitoring": "false",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "goSecure_Proxy-Server"
+          }
+        ],
+                "NetworkInterfaces": [
+                    {
+                        "DeleteOnTermination": "true",
+                        "Description": "Primary network interface",
+                        "DeviceIndex": 0,
+                        "SubnetId": {
+                            "Ref": "goSecureProxySubnet"
+                        },
+                        "PrivateIpAddresses": [
+                            {
+                                "PrivateIpAddress": "172.16.150.101",
+                                "Primary": "true"
+              }
+            ],
+                        "GroupSet": [
+                            {
+                                "Ref": "goSecureProxySG"
+              }
+            ]
+          }
+        ]
+            }
+        },
+        "goSecureProxySG": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "default VPC security group",
+                "VpcId": {
+                    "Ref": "goSecureProxyVPC"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "goSecure_Proxy-Security_Group"
+          }
+        ]
+            }
+        },
+        "acl9": {
+            "Type": "AWS::EC2::NetworkAclEntry",
+            "Properties": {
+                "CidrBlock": "0.0.0.0/0",
+                "Egress": "true",
+                "Protocol": "-1",
+                "RuleAction": "allow",
+                "RuleNumber": "100",
+                "NetworkAclId": {
+                    "Ref": "goSecureProxyNACL"
+                }
+            }
+        },
+        "acl10": {
+            "Type": "AWS::EC2::NetworkAclEntry",
+            "Properties": {
+                "CidrBlock": "0.0.0.0/0",
+                "Protocol": "-1",
+                "RuleAction": "allow",
+                "RuleNumber": "100",
+                "NetworkAclId": {
+                    "Ref": "goSecureProxyNACL"
+                }
+            }
+        },
+        "subnetacl5": {
+            "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+            "Properties": {
+                "NetworkAclId": {
+                    "Ref": "goSecureProxyNACL"
+                },
+                "SubnetId": {
+                    "Ref": "goSecureProxySubnet"
+                }
+            }
+        },
+        "gw4": {
+            "Type": "AWS::EC2::VPCGatewayAttachment",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "goSecureProxyVPC"
+                },
+                "InternetGatewayId": {
+                    "Ref": "goSecureProxyIG"
+                }
+            }
+        },
+        "subnetroute8": {
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": {
+                "RouteTableId": {
+                    "Ref": "goSecureProxyRT1"
+                },
+                "SubnetId": {
+                    "Ref": "goSecureProxySubnet"
+                }
+            }
+        },
+        "route5": {
+            "Type": "AWS::EC2::Route",
+            "Properties": {
+                "DestinationCidrBlock": "0.0.0.0/0",
+                "RouteTableId": {
+                    "Ref": "goSecureProxyRT1"
+                },
+                "GatewayId": {
+                    "Ref": "goSecureProxyIG"
+                }
+            },
+            "DependsOn": "gw4"
+        },
+        "dchpassoc4": {
+            "Type": "AWS::EC2::VPCDHCPOptionsAssociation",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "goSecureProxyVPC"
+                },
+                "DhcpOptionsId": {
+                    "Ref": "goSecureProxyDHCP"
+                }
+            }
+        },
+        "assoc4": {
+            "Type": "AWS::EC2::EIPAssociation",
+            "Properties": {
+                "AllocationId": {
+                    "Fn::GetAtt": [
+            "goSecureProxyEIP",
+            "AllocationId"
+          ]
+                },
+                "InstanceId": {
+                    "Ref": "goSecureProxyServerInstance"
+                }
+            }
+        },
+        "ingress11": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "goSecureProxySG"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "22",
+                "ToPort": "22",
+                "CidrIp": "0.0.0.0/0"
+            }
+        },
+        "ingress12": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "goSecureProxySG"
+                },
+                "IpProtocol": "udp",
+                "FromPort": "4500",
+                "ToPort": "4500",
+                "CidrIp": "0.0.0.0/0"
+            }
+        },
+        "ingress13": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "goSecureProxySG"
+                },
+                "IpProtocol": "udp",
+                "FromPort": "500",
+                "ToPort": "500",
+                "CidrIp": "0.0.0.0/0"
+            }
+        },
+        "egress5": {
+            "Type": "AWS::EC2::SecurityGroupEgress",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "goSecureProxySG"
+                },
+                "IpProtocol": "-1",
+                "CidrIp": "0.0.0.0/0"
+            }
+        }
+    },
+    "Description": "goSecure Proxy Template",
+    "Outputs": {
+        "goSecureProxyVPCId": {
+            "Value": {
+                "Ref": "goSecureProxyVPC"
+            }
+        }
+    }
+}
