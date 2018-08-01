@@ -1,19 +1,20 @@
 import time
-from subprocess import CalledProcessError, check_output, Popen
-
 import urllib.request, urllib.error, urllib.parse
+
+from .pi_mgmt import get_output
 from . import wifi_captive_portal
+from subprocess import CalledProcessError, Popen
 
 
 def get_wifi_list():
     try:
-        wlan_status = check_output(["sudo", "ifup", "wlan0"])
+        wlan_status = get_output(["sudo", "ifup", "wlan0"])
         returncode = 0
     except CalledProcessError as e:
         returncode = e.returncode
 
     try:
-        iw_list = (check_output(["sudo", "iwlist", "wlan0", "scan"])).split(b'\n')
+        iw_list = get_output(["sudo", "iwlist", "wlan0", "scan"])
     except CalledProcessError as e:
         iw_list = []
 
@@ -31,7 +32,7 @@ def get_wifi_list():
 def add_wifi(wifi_ssid, wifi_key):
     with open("/etc/wpa_supplicant/wpa_supplicant.conf") as wpa_supplicant:
         lines = wpa_supplicant.readlines()
-    
+
     wifi_exists = False
     for x in range(0, len(lines)):
         #if SSID is already in file
@@ -56,14 +57,14 @@ def add_wifi(wifi_ssid, wifi_key):
     with open("/etc/wpa_supplicant/wpa_supplicant.conf", "w") as fout:
         for line in lines:
             fout.write(line)
-    
+
     process = Popen(["sudo", "ifdown", "wlan0"])
     process.wait()
     process = Popen(["sudo", "ifup", "wlan0"])
     process.wait()
-    
+
     time.sleep(15)
-    
+
     if not internet_status():
         wifi_captive_portal.captive_portal(wifi_ssid, "", "")
 
@@ -84,9 +85,9 @@ def reset_wifi():
     with open("/etc/wpa_supplicant/wpa_supplicant.conf", "w") as fout:
         for line in lines:
             fout.write(line)
-    
+
     try:
-        vpn_status = (check_output(["sudo", "ifdown", "wlan0"]))
+        vpn_status = get_output(["sudo", "ifdown", "wlan0"])
         returncode = 0
     except CalledProcessError as e:
         returncode = e.returncode

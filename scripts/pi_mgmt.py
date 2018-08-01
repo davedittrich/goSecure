@@ -1,12 +1,14 @@
-try:
-    import RPi.GPIO as GPIO
-except Exception as e:  # noqa
-    pass
-
 import os
 import textwrap
-from subprocess import call
+import RPi.GPIO as GPIO
 
+from subprocess import call, check_output, Popen
+
+
+def get_output(cmd=['echo', 'NO COMMAND SPECIFIED']):
+    output = check_output(cmd, stderr=subprocess.STDOUT
+        ).decode('UTF-8').splitlines()
+    return output
 
 
 def pi_reboot():
@@ -42,13 +44,10 @@ def update_client():
 
 
 def turn_led_green(on=True):
-    try:
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setwarnings(False)
-        GPIO.setup(7, GPIO.OUT)
-        GPIO.output(7, GPIO.HIGH if on else GPIO.LOW)
-    except NameError:
-        pass
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+    GPIO.setup(7, GPIO.OUT)
+    GPIO.output(7, GPIO.HIGH if on else GPIO.LOW)
 
 
 def turn_on_led_green():

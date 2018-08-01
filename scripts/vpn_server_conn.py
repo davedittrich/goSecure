@@ -1,7 +1,7 @@
 import time
-from subprocess import CalledProcessError, check_output
+from subprocess import CalledProcessError
 
-from .pi_mgmt import turn_on_led_green, turn_off_led_green
+from .pi_mgmt import get_output, turn_on_led_green, turn_off_led_green
 
 
 def set_vpn_params(vpn_server, user_id, user_psk):
@@ -36,11 +36,11 @@ def add_route():
     (prevents getting locked out from the goSecure Client web gui)
     """
 
-    route_table_list = check_output(["ip", "route", "show", "table", "220"]).split(b'\n')
+    route_table_list = get_output(["ip", "route", "show", "table", "220"])
 
     if "192.168.50.0/24 dev eth0  scope link" not in route_table_list:
         try:
-            check_output(["sudo", "ip", "route", "add", "table", "220", "192.168.50.0/24", "dev", "eth0"])
+            get_output(["sudo", "ip", "route", "add", "table", "220", "192.168.50.0/24", "dev", "eth0"])
         except CalledProcessError:
             return False
     return True
@@ -48,7 +48,7 @@ def add_route():
 
 def start_vpn():
     try:
-        check_output(["sudo", "ipsec", "start"])
+        get_output(["sudo", "ipsec", "start"])
     except CalledProcessError:
         return False
     else:
@@ -64,7 +64,7 @@ def start_vpn():
 
 def stop_vpn():
     try:
-        check_output(["sudo", "ipsec", "stop"])
+        get_output(["sudo", "ipsec", "stop"])
     except CalledProcessError:
         return False
     else:
@@ -76,7 +76,7 @@ def restart_vpn():
     turn_off_led_green()
 
     try:
-        check_output(["sudo", "ipsec", "restart"])
+        get_output(["sudo", "ipsec", "restart"])
     except CalledProcessError:
         return False
     else:
@@ -92,7 +92,7 @@ def restart_vpn():
 
 def vpn_status():
     try:
-        vpn_status_info = check_output(["sudo", "ipsec", "status"]).split(b'\n')
+        vpn_status_info = get_output(["sudo", "ipsec", "status"])
     except CalledProcessError:
         return False
     else:
