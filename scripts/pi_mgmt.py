@@ -1,8 +1,12 @@
+try:
+    import RPi.GPIO as GPIO
+except ModuleNotFoundError:
+    pass
+
 import os
 import textwrap
 from subprocess import call
 
-import RPi.GPIO as GPIO
 
 
 def pi_reboot():
@@ -38,10 +42,13 @@ def update_client():
 
 
 def turn_led_green(on=True):
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
-    GPIO.setup(7, GPIO.OUT)
-    GPIO.output(7, GPIO.HIGH if on else GPIO.LOW)
+    try:
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+        GPIO.setup(7, GPIO.OUT)
+        GPIO.output(7, GPIO.HIGH if on else GPIO.LOW)
+    except NameError:
+        pass
 
 
 def turn_on_led_green():

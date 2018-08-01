@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import textwrap
@@ -289,7 +289,7 @@ def setup_user_interface():
     print("goSecure_Client_Script - Setup User Interface\n")
     setup_user_interface_commands = textwrap.dedent("""\
         sudo apt-get install python-pip -y
-        sudo pip install Flask Flask-WTF Flask-Login mechanize
+        sudo pip install Flask Flask-WTF Flask-Login mechanicalsoup
         wget -P /home/pi https://github.com/davedittrich/goSecure/archive/master.zip
         unzip /home/pi/master.zip
         rm /home/pi/master.zip
