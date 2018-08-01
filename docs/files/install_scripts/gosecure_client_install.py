@@ -84,7 +84,7 @@ def configure_firewall():
 
 def enable_hardware_random():
     print("goSecure_Client_Script - Enable Hardware Random\n")
-    pi_hardware_version = check_output(["cat", "/proc/cpuinfo"]).split("\n")[-4]
+    pi_hardware_version = check_output(["cat", "/proc/cpuinfo"]).split(b'\n')[-4]
 
     # if Pi 2
     if "BCM2708" in pi_hardware_version:
@@ -288,8 +288,8 @@ def setup_dhcp_and_dns_server():
 def setup_user_interface():
     print("goSecure_Client_Script - Setup User Interface\n")
     setup_user_interface_commands = textwrap.dedent("""\
-        sudo apt-get install python-pip -y
-        sudo pip install Flask Flask-WTF Flask-Login mechanicalsoup
+        sudo apt-get install python3-pip -y
+        sudo pip3 install Flask Flask-WTF Flask-Login mechanicalsoup
         wget -P /home/pi https://github.com/davedittrich/goSecure/archive/master.zip
         unzip /home/pi/master.zip
         rm /home/pi/master.zip
@@ -309,7 +309,7 @@ def setup_user_interface():
 
         [Service]
         Type=idle
-        ExecStart=/usr/bin/python /home/pi/goSecure_Web_GUI/gosecure_app.py
+        ExecStart=/usr/bin/python3 /home/pi/goSecure_Web_GUI/gosecure_app.py
 
         [Install]
         WantedBy=multi-user.target""")
@@ -331,7 +331,7 @@ def setup_user_interface():
 def main():
     cmdargs = str(sys.argv)
     if len(sys.argv) != 1:
-        print('Syntax is: sudo python gosecure_client_install.py\nExample: sudo python gosecure_client_install.py\n')
+        print('Syntax is: sudo python3 gosecure_client_install.py\nExample: sudo python3 gosecure_client_install.py\n')
         exit()
 
     update_os()

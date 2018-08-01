@@ -13,7 +13,7 @@ def get_wifi_list():
         returncode = e.returncode
 
     try:
-        iw_list = (check_output(["sudo", "iwlist", "wlan0", "scan"])).split("\n")
+        iw_list = (check_output(["sudo", "iwlist", "wlan0", "scan"])).split(b'\n')
     except CalledProcessError as e:
         iw_list = []
 

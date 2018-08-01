@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import base64
 import hashlib
 import os
 import pickle
@@ -108,7 +109,9 @@ def user_validate_credentials(username, password):
     else:
         stored_password = users[username]['password']
         stored_salt = users[username]['salt']
-        userPasswordHash = hashlib.sha256(str(stored_salt) + password).hexdigest()
+        userPasswordHash = hashlib.sha256(
+            str(stored_salt).encode('utf-8') + password.encode('utf-8')
+        ).hexdigest()
         return stored_password == userPasswordHash
 
 
@@ -121,8 +124,10 @@ def user_change_credentials(username, password, new_password):
         # verify current password
         if user_validate_credentials(username, password):
             #change password
-            userPasswordHashSalt = os.urandom(16).encode("base64")
-            userPasswordHash = hashlib.sha256(str(userPasswordHashSalt) + new_password).hexdigest()
+            userPasswordHashSalt = base64.b64encode(os.urandom(16))
+            userPasswordHash = hashlib.sha256(
+                str(userPasswordHashSalt).encode('utf-8') + new_password.encode('utf-8')
+            ).hexdigest()
             users[username]["salt"] = userPasswordHashSalt
             users[username]["password"] = userPasswordHash
             with open("/home/pi/goSecure_Web_GUI/users_db.p", "wb") as fout:

@@ -36,7 +36,7 @@ def add_route():
     (prevents getting locked out from the goSecure Client web gui)
     """
 
-    route_table_list = check_output(["ip", "route", "show", "table", "220"]).split("\n")
+    route_table_list = check_output(["ip", "route", "show", "table", "220"]).split(b'\n')
 
     if "192.168.50.0/24 dev eth0  scope link" not in route_table_list:
         try:
@@ -92,7 +92,7 @@ def restart_vpn():
 
 def vpn_status():
     try:
-        vpn_status_info = check_output(["sudo", "ipsec", "status"]).split("\n")
+        vpn_status_info = check_output(["sudo", "ipsec", "status"]).split(b'\n')
     except CalledProcessError:
         return False
     else:

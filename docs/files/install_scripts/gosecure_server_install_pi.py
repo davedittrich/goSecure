@@ -80,7 +80,7 @@ def configure_firewall():
 
 def enable_hardware_random():
     print("goSecure_Server_Script - Enable Hardware Random\n")
-    pi_hardware_version = check_output(["cat", "/proc/cpuinfo"]).split("\n")[-4]
+    pi_hardware_version = check_output(["cat", "/proc/cpuinfo"]).split(b'\n')[-4]
 
     # if Pi 2
     if "BCM2708" in pi_hardware_version:
