@@ -97,7 +97,7 @@ def vpn_status():
         return False
     else:
         # ipsec status command ran successfully, check if tunnel is established
-        return vpn_status_info[1].strip()[9:20] == "ESTABLISHED"
+        return vpn_status_info[1].strip()[9:20] == b'ESTABLISHED'
 
 
 def vpn_configuration_status():

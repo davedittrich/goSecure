@@ -1,6 +1,6 @@
 try:
     import RPi.GPIO as GPIO
-except ModuleNotFoundError:
+except Exception as e:  # noqa
     pass
 
 import os

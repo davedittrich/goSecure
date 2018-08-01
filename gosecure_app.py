@@ -52,7 +52,7 @@ def user_loader(username):
 def request_loader(request):
     username = request.form.get('username')
     if username not in users:
-        return
+        return None
 
     user = User()
     user.id = username
@@ -60,7 +60,7 @@ def request_loader(request):
     # DO NOT ever store passwords in plaintext and always compare password
     # hashes using constant-time comparison!
     if user_validate_credentials(request.form['username'], request.form['password']):
-        user.is_authenticated = True
+        return None
 
     return user
 
@@ -123,8 +123,8 @@ def user_change_credentials(username, password, new_password):
     else:
         # verify current password
         if user_validate_credentials(username, password):
-            #change password
-            userPasswordHashSalt = base64.b64encode(os.urandom(16))
+            # change password
+            userPasswordHashSalt = base64.b64encode(os.urandom(16)).decode('utf-8')
             userPasswordHash = hashlib.sha256(
                 str(userPasswordHashSalt).encode('utf-8') + new_password.encode('utf-8')
             ).hexdigest()
