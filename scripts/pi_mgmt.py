@@ -1,12 +1,11 @@
 import os
 import textwrap
 import RPi.GPIO as GPIO
-
-from subprocess import call, check_output, Popen
+import subprocess
 
 
 def get_output(cmd=['echo', 'NO COMMAND SPECIFIED']):
-    output = check_output(cmd, stderr=subprocess.STDOUT
+    output = subprocess.check_output(cmd, stderr=subprocess.STDOUT
         ).decode('UTF-8').splitlines()
     return output
 
@@ -40,7 +39,7 @@ def update_client():
         sudo reboot""")
 
     for command in update_user_interface_commands.splitlines():
-        call(command, shell=True)
+        subprocess.call(command, shell=True)
 
 
 def turn_led_green(on=True):
