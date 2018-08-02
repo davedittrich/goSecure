@@ -32,6 +32,17 @@ def pi_shutdown():
     os.system("sudo shutdown -h now")
 
 
+def toggle_logging():
+    """Toggle logging level between INFO (default) and DEBUG"""
+    logger.debug('called toggle_logging()')
+    current = logger.getEffectiveLevel()
+    if current == logging.DEBUG:
+        logger.setLevel(logging.INFO)
+        return "INFO"
+    else:
+        logger.setLevel(logging.DEBUG)
+        return "DEBUG"
+
 def start_ssh_service():
     logger.debug('called start_ssh_service()')
     os.system("sudo service ssh start")

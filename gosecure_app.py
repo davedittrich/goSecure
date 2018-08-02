@@ -395,6 +395,9 @@ def execute_action():
     elif action == "ssh_service":
         start_ssh_service()
         flash("SSH Service Started! It will be turned off on reboot.")
+    elif action == "logging":
+        level = toggle_logging()
+        flash("Logging level set to {}".format(level))
     elif action == "update_client":
         update_client()
         flash("Client will reboot... please reload this page in 1 minute.")
