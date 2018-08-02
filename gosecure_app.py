@@ -15,7 +15,7 @@ from forms import (
     loginForm, initialSetupForm, userForm, wifiForm, vpnPskForm,
     resetToDefaultForm, statusForm)
 from scripts.pi_mgmt import (
-    pi_reboot, pi_shutdown, start_ssh_service, update_client)
+    pi_reboot, pi_shutdown, toggle_logging, start_ssh_service, update_client)
 from scripts.rpi_network_conn import add_wifi, internet_status, reset_wifi
 from scripts.vpn_server_conn import (
     set_vpn_params, reset_vpn_params, start_vpn, stop_vpn, restart_vpn,

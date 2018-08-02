@@ -37,10 +37,12 @@ def toggle_logging():
     logger.debug('called toggle_logging()')
     current = logger.getEffectiveLevel()
     if current == logging.DEBUG:
+        logger.debug('logging level now INFO')
         logger.setLevel(logging.INFO)
         return "INFO"
     else:
         logger.setLevel(logging.DEBUG)
+        logger.debug('logging level now DEBUG')
         return "DEBUG"
 
 def start_ssh_service():
