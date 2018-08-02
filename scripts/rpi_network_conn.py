@@ -1,22 +1,37 @@
+import logging
 import time
 import urllib.request, urllib.error, urllib.parse
 
 from .pi_mgmt import get_output
 from . import wifi_captive_portal
 from subprocess import CalledProcessError, Popen
+from systemd.journal import JournaldLogHandler
+
+logger = logging.getLogger(__name__)
+journald_handler = JournaldLogHandler()
+journald_handler.setFormatter(logging.Formatter(
+    '[%(levelname)s] [+] %(message)s'
+))
+logger.addHandler(journald_handler)
+logger.setLevel(logging.INFO)
 
 
 def get_wifi_list():
+    logger.debug('called get_wifi_list()')
     try:
         wlan_status = get_output(["sudo", "ifup", "wlan0"])
         returncode = 0
     except CalledProcessError as e:
         returncode = e.returncode
+    for line in wlan_status:
+        logger.debug(line)
 
     try:
         iw_list = get_output(["sudo", "iwlist", "wlan0", "scan"])
     except CalledProcessError as e:
         iw_list = []
+    for line in iw_list:
+        logger.debug(line)
 
     # contains a tuple of the (ESSID, Encryption key)
     wifi_list = []
@@ -30,6 +45,7 @@ def get_wifi_list():
 
 
 def add_wifi(wifi_ssid, wifi_key):
+    logger.debug('called add_wifi()')
     with open("/etc/wpa_supplicant/wpa_supplicant.conf") as wpa_supplicant:
         lines = wpa_supplicant.readlines()
 
@@ -70,6 +86,7 @@ def add_wifi(wifi_ssid, wifi_key):
 
 
 def internet_status():
+    logger.debug('called internet_status()')
     try:
         response = urllib.request.urlopen("https://aws.amazon.com", timeout=1)
         return True
@@ -79,6 +96,7 @@ def internet_status():
 
 
 def reset_wifi():
+    logger.debug('called reset_wifi()')
     lines = ["country=US\n",
              "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n",
              "update_config=1\n"]

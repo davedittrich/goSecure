@@ -1,10 +1,22 @@
+import logging
 import time
-from subprocess import CalledProcessError
 
+from subprocess import CalledProcessError
+from systemd.journal import JournaldLogHandler
 from .pi_mgmt import get_output, turn_on_led_green, turn_off_led_green
 
 
+logger = logging.getLogger(__name__)
+journald_handler = JournaldLogHandler()
+journald_handler.setFormatter(logging.Formatter(
+    '[%(levelname)s] [+] %(message)s'
+))
+logger.addHandler(journald_handler)
+logger.setLevel(logging.INFO)
+
+
 def set_vpn_params(vpn_server, user_id, user_psk):
+    logger.debug('called set_vpn_params()')
     # set the goSecure server IP address in the ipsec.conf file
     with open("/etc/ipsec.conf") as fin:
         lines = fin.readlines()
@@ -25,6 +37,7 @@ def set_vpn_params(vpn_server, user_id, user_psk):
 
 
 def reset_vpn_params():
+    logger.debug('called reset_vpn_params()')
     set_vpn_params("<eth0_ip_of_server>",
                    "<unique_id_of_client>",
                    "<password_for_client>")
@@ -36,7 +49,10 @@ def add_route():
     (prevents getting locked out from the goSecure Client web gui)
     """
 
+    logger.debug('called add_route()')
     route_table_list = get_output(["ip", "route", "show", "table", "220"])
+    for line in route_table_list:
+        logger.debug(line)
 
     if "192.168.50.0/24 dev eth0  scope link" not in route_table_list:
         try:
@@ -47,6 +63,7 @@ def add_route():
 
 
 def start_vpn():
+    logger.debug('called start_vpn()')
     try:
         get_output(["sudo", "ipsec", "start"])
     except CalledProcessError:
@@ -63,6 +80,7 @@ def start_vpn():
 
 
 def stop_vpn():
+    logger.debug('called stop_vpn()')
     try:
         get_output(["sudo", "ipsec", "stop"])
     except CalledProcessError:
@@ -73,6 +91,7 @@ def stop_vpn():
 
 
 def restart_vpn():
+    logger.debug('called restart_vpn()')
     turn_off_led_green()
 
     try:
@@ -91,16 +110,20 @@ def restart_vpn():
 
 
 def vpn_status():
+    logger.debug('called vpn_status()')
     try:
         vpn_status_info = get_output(["sudo", "ipsec", "status"])
     except CalledProcessError:
         return False
     else:
         # ipsec status command ran successfully, check if tunnel is established
+        for line in vpn_status_info:
+            logger.debug(line)
         return vpn_status_info[1].strip()[9:20] == 'ESTABLISHED'
 
 
 def vpn_configuration_status():
+    logger.debug('called vpn_configuration_status()')
     leftid_set = 0  # unique id of client
     right_set = 0  # strongSwan server external IP or DNS name
     vpn_psk = 0  # unique id of client and psk for VPN

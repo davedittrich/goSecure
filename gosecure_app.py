@@ -2,15 +2,15 @@
 
 import base64
 import hashlib
+import logging
 import os
 import pickle
 import time
-from functools import wraps
-
 import flask_login as flask_login
+
+from functools import wraps
 from flask import (
     Flask, render_template, request, Response, flash, redirect, url_for)
-
 from forms import (
     loginForm, initialSetupForm, userForm, wifiForm, vpnPskForm,
     resetToDefaultForm, statusForm)
@@ -20,10 +20,20 @@ from scripts.rpi_network_conn import add_wifi, internet_status, reset_wifi
 from scripts.vpn_server_conn import (
     set_vpn_params, reset_vpn_params, start_vpn, stop_vpn, restart_vpn,
     vpn_status, vpn_configuration_status)
+from systemd.journal import JournaldLogHandler
+
 
 app = Flask(__name__)
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
+
+logger = logging.getLogger(__name__)
+journald_handler = JournaldLogHandler()
+journald_handler.setFormatter(logging.Formatter(
+    '[%(levelname)s] [+] %(message)s'
+))
+logger.addHandler(journald_handler)
+logger.setLevel(logging.INFO)
 
 
 # Flask-Login functions (for regular Pages)
