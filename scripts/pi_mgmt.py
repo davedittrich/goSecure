@@ -70,12 +70,17 @@ def update_client():
     for command in update_user_interface_commands.splitlines():
         subprocess.call(command, shell=True)
 
-
+# See: https://www.raspberrypi-spy.co.uk/2012/09/checking-your-raspberry-pi-board-version/
 def turn_led_green(on=True):
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
-    GPIO.setup(7, GPIO.OUT)
-    GPIO.output(7, GPIO.HIGH if on else GPIO.LOW)
+    state = 1 if on else 0
+    # TODO(dittrich): Add support for differentiating RPi type to use this
+    #GPIO.setmode(GPIO.BCM)
+    #GPIO.setwarnings(False)
+    #GPIO.setup(7, GPIO.OUT)
+    #GPIO.output(7, GPIO.HIGH if on else GPIO.LOW)
+    # Works on "Raspberry Pi 3 Model B Plus Rev 1.3" per /proc/device-tree/model
+    get_output(['/opt/vc/bin/vcmailbox', '0x00038040', '8', '8', '130',
+        str(state)])
 
 
 def turn_on_led_green():
