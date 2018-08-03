@@ -1,4 +1,5 @@
 import logging
+import socket
 import time
 import urllib.request, urllib.error, urllib.parse
 
@@ -85,12 +86,25 @@ def add_wifi(wifi_ssid, wifi_key):
         wifi_captive_portal.captive_portal(wifi_ssid, "", "")
 
 
+def ping_status():
+    logger.debug('called ping_status()')
+    try:
+        ping_status = get_output(["ping", "-q", "-c3", "www.google.com"])
+        for line in ping_status:
+            logger.debug(line)
+        return " ".join([line for line in ping_status]).find('3 received') > 0
+    except Exception as err:
+        pass
+    return False
+
 def internet_status():
     logger.debug('called internet_status()')
     try:
-        response = urllib.request.urlopen("https://aws.amazon.com", timeout=1)
+        response = urllib.request.urlopen("https://aws.amazon.com", timeout=3)
         return True
     except urllib.error.URLError as err:
+        pass
+    except socket.timeout as err:
         pass
     return False
 

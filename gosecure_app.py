@@ -16,7 +16,8 @@ from forms import (
     resetToDefaultForm, statusForm)
 from scripts.pi_mgmt import (
     pi_reboot, pi_shutdown, toggle_logging, start_ssh_service, update_client)
-from scripts.rpi_network_conn import add_wifi, internet_status, reset_wifi
+from scripts.rpi_network_conn import (
+    add_wifi, internet_status, ping_status, reset_wifi)
 from scripts.vpn_server_conn import (
     set_vpn_params, reset_vpn_params, start_vpn, stop_vpn, restart_vpn,
     vpn_status, vpn_configuration_status)
@@ -183,7 +184,7 @@ def login():
                     flash("Please change the default password.", "notice")
                     return redirect(url_for("user"))
                 else:
-                    internet_status_bool = internet_status()
+                    internet_status_bool = ping_status() and internet_status()
                     vpn_status_bool = vpn_status()
                     vpn_configuration_status_bool = vpn_configuration_status()
 
