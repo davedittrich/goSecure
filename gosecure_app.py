@@ -15,7 +15,8 @@ from forms import (
     loginForm, initialSetupForm, userForm, wifiForm, vpnPskForm,
     resetToDefaultForm, statusForm)
 from scripts.pi_mgmt import (
-    pi_reboot, pi_shutdown, toggle_logging, start_ssh_service, update_client)
+    pi_reboot, pi_shutdown, toggle_logging, start_ssh_service, update_client,
+    turn_on_led_green, turn_off_led_green)
 from scripts.rpi_network_conn import (
     add_wifi, internet_status, ping_status, reset_wifi)
 from scripts.vpn_server_conn import (
@@ -206,8 +207,10 @@ def login():
                     # check to see if vpn is up. If not, redirect to vpn page
                     elif vpn_status_bool is False:
                         flash("VPN is not established.", "notice")
+                        turn_off_led_green()
                         return redirect(url_for("vpn_psk"))
                     else:
+                        turn_on_led_green()
                         return redirect(request.args.get("next") or url_for("status"))
             else:
                 flash("Invalid username or password. Please try again.", "error")
@@ -477,6 +480,10 @@ def api_vpn_actions():
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(24)
+
+    # Just because OCD
+    if vpn_status():
+        turn_on_led_green()
 
     # if SSL key and certificate pair do not exist, create them.
     if (os.path.exists("ssl.key") and os.path.exists("ssl.crt")) is not True:

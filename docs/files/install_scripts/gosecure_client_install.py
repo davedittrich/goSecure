@@ -211,9 +211,12 @@ def start_strongswan():
     # add temporary route for local eth0 interface
     call("sudo ip route add table 220 192.168.50.0/24 dev eth0", shell=True)
 
+    # TODO(dittrich): This is a hack to get LED functioning.
+    # The /etc/rc.local file should be properly templated (e.g., with Jinja)
     route_on_boot_commands = textwrap.dedent("""\
         sudo sed -i '$ d' /etc/rc.local
         sudo sh -c \"echo 'ip route add table 220 192.168.50.0/24 dev eth0' >> /etc/rc.local\"
+        sudo sh -c \"echo 'echo none > /sys/class/leds/led0/trigger' >> /etc/rc.local\"
         sudo sh -c \"echo 'exit 0' >> /etc/rc.local\"""")
 
     # add route on boot
