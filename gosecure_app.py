@@ -24,18 +24,26 @@ from scripts.vpn_server_conn import (
 from systemd.journal import JournaldLogHandler
 
 
+def default_loglevel():
+    if os.environ.get('DEBUG', '0') == '1' or os.path.exists('/home/pi/.debug'):
+        return logging.DEBUG
+    return logging.INFO
+
+
 app = Flask(__name__)
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('goSecure')
 journald_handler = JournaldLogHandler()
 journald_handler.setFormatter(logging.Formatter(
     '[%(levelname)s] [+] %(message)s'
 ))
 logger.addHandler(journald_handler)
-logger.setLevel(logging.INFO)
-
+loglevel = default_loglevel()
+logger.setLevel(loglevel)
+logger.info("loglevel set to {}".format(
+    "DEBUG" if loglevel == logging.DEBUG else "INFO"))
 
 # Flask-Login functions (for regular Pages)
 

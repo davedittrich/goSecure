@@ -6,13 +6,7 @@ from systemd.journal import JournaldLogHandler
 from .pi_mgmt import get_output, turn_on_led_green, turn_off_led_green
 
 
-logger = logging.getLogger(__name__)
-journald_handler = JournaldLogHandler()
-journald_handler.setFormatter(logging.Formatter(
-    '[%(levelname)s] [+] %(message)s'
-))
-logger.addHandler(journald_handler)
-logger.setLevel(logging.INFO)
+logger = logging.getLogger('goSecure')
 
 
 def set_vpn_params(vpn_server, user_id, user_psk):

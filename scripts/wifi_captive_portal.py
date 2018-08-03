@@ -4,13 +4,7 @@ import mechanicalsoup
 from systemd.journal import JournaldLogHandler
 
 
-logger = logging.getLogger(__name__)
-journald_handler = JournaldLogHandler()
-journald_handler.setFormatter(logging.Formatter(
-    '[%(levelname)s] [+] %(message)s'
-))
-logger.addHandler(journald_handler)
-logger.setLevel(logging.INFO)
+logger = logging.getLogger('goSecure')
 
 
 def captive_portal(wifi_ssid, cp_username, cp_password):
