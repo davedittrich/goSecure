@@ -13,7 +13,7 @@ from flask import (
     Flask, render_template, request, Response, flash, redirect, url_for)
 from forms import (
     loginForm, initialSetupForm, userForm, wifiForm, vpnPskForm,
-    resetToDefaultForm, statusForm)
+    resetToDefaultForm, aboutForm, statusForm)
 from scripts.pi_mgmt import (
     pi_reboot, pi_shutdown, toggle_logging, start_ssh_service, update_client,
     turn_on_led_green, turn_off_led_green)
@@ -224,6 +224,13 @@ def login():
 def logout():
     flask_login.logout_user()
     return redirect(url_for("login"))
+
+
+@app.route("/about", methods=["POST"])
+def about_action():
+    form = aboutForm()
+    if request.method == "POST":
+        return render_template('about.html', form=form)
 
 
 # User page

@@ -15,6 +15,10 @@ class statusForm(FlaskForm):
     pass
 
 
+class aboutForm(FlaskForm):
+    pass
+
+
 class userForm(FlaskForm):
     username = StringField("Username", [validators.DataRequired("Please enter the username."), validators.Length(min=2, max=25, message="Please enter a username between 2 and 25 characters.")])
     password = PasswordField("Current Password", [validators.DataRequired("Please enter the password."), validators.Length(min=8, max=128, message="Please enter a password between 8 and 128 characters.")])

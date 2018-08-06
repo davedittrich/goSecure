@@ -89,6 +89,19 @@
                         <a href="#top" onclick="post('/action', {action: 'update_client'});">Update Client</a>
                     </li>
                 </div>
+
+            <li><a href="#top" data-toggle="collapse" data-target="#help-options"><i class="fa fa-question-circle"></i> Help</a></li>
+                <div id="help-options" class="collapse">
+                    <li>
+                        <a href="#top" onclick="post('/about', {action: 'about'});">About</a>
+                    </li>
+                    <li>
+                        <a id="homepage" href="https://davedittrich.github.io/goSecure/index.html" target="_blank">goSecure Home Page</a>
+                    </li>
+                    <li>
+                        <a id="training" href="https://davedittrich.readthedocs.io/projects/field-guide-security-training-campaign/en/latest/" target="_blank">Training Field Guide</a>
+                    </li>
+                </div>
             </ul>
         </nav>
 

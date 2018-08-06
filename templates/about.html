@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}About this app{% endblock %}
+
+{% block heading_title %} About this app{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3 form-box">
+            <form id="aboutform" name="aboutform" role="form" action="about" method="post" class="registration-form">
+                <fieldset class="description" style="color:#fff;">
+                    <div class="col-sm-8 col-sm-offset-2 text">
+                        <div class="description">
+                        <p>
+                            goSecure v0.10.0<br><br>
+
+                            Dave Dittrich &lt;dave.dittrich@gmail.com&gt;<br><br>
+
+                            <a id="homepage" href="https://davedittrich.github.io/goSecure/index.html" target="_blank">goSecure Home Page</a><br><br>
+
+                            <a id="training" href="https://davedittrich.readthedocs.io/projects/field-guide-security-training-campaign/en/latest/" target="_blank">Field Guide to Security Training in the Campaign</a><br><br>
+
+                        </p>
+                    </div>
+                </fieldset>
+                {{ form.csrf_token }}
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
