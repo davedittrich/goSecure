@@ -51,15 +51,18 @@ def update_client():
         wget -P /home/pi/. https://github.com/davedittrich/goSecure/archive/master.zip
         unzip -d /home/pi/. /home/pi/master.zip
         rm /home/pi/master.zip
+        sudo chown -R pi:pi /home/pi/goSecure-master
+        sudo find /home/pi/goSecure-master -type d -exec chmod 550 {} \;
+        sudo find /home/pi/goSecure-master_-type f -exec chmod 440 {} \;
         sudo mv /home/pi/goSecure-master /home/pi/goSecure_Web_GUI
         sudo mv /home/pi/goSecure_Web_GUI.old/ssl.crt /home/pi/goSecure_Web_GUI/.
         sudo mv /home/pi/goSecure_Web_GUI.old/ssl.key /home/pi/goSecure_Web_GUI/.
         sudo mv /home/pi/goSecure_Web_GUI.old/users_db.p /home/pi/goSecure_Web_GUI/.
+        sudo chmod 660 /home/pi/goSecure_Web_GUI/users_db.p
         sudo chown -R pi:pi /home/pi/goSecure_Web_GUI
         sudo find /home/pi/goSecure_Web_GUI -type d -exec chmod 550 {} \;
         sudo find /home/pi/goSecure_Web_GUI -type f -exec chmod 440 {} \;
-        sudo chmod 660 /home/pi/goSecure_Web_GUI/users_db.p
-        sudo reboot""")
+        sudo shutdown -r now""")
 
     for command in update_user_interface_commands.splitlines():
         subprocess.call(command, shell=True)
