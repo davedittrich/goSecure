@@ -1,8 +1,3 @@
-All code changes made by Dave Dittrich subsequent to forking the goSecure
-(beginning at https://github.com/davedittrich/goSecure/commit/e64a85c3dc50b3dcf552983d3c3ed7c081a0ca62)
-code base are released under the Apache License 2.0.
-
-/-----------------------------------------------------------------------\
 
                                  Apache License
                            Version 2.0, January 2004
@@ -205,21 +200,3 @@ code base are released under the Apache License 2.0.
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
-\-----------------------------------------------------------------------/
-
-The original goSecure code base from which this repository was forked
-(up to and including https://github.com/nsacyber/goSecure/commit/8d2b8179e63d26640a46aa6475c4e13300ade55f)
-was released under the following license:
-
-
-/-----------------------------------------------------------------------\
-
-This Work was prepared by a United States Government employee and, therefore,
-is excluded from copyright by Section 105 of the Copyright Act of 1976.
-
-Copyright and Related Rights in the Work worldwide are waived through the
-[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)
-[Universal license](https://creativecommons.org/publicdomain/zero/1.0/legalcode).
-
-\-----------------------------------------------------------------------/
