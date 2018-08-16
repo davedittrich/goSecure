@@ -80,31 +80,8 @@ def configure_firewall():
 
 def enable_hardware_random():
     print("goSecure_Server_Script - Enable Hardware Random\n")
-    pi_hardware_version = check_output(["cat", "/proc/cpuinfo"]).split(b'\n')[-4]
-
-    # if Pi 2
-    if "BCM2708" in pi_hardware_version:
-        call("sudo modprobe bcm2708-rng", shell=True)
-
-        # call("sudo sh -c 'echo bcm2708-rng >> /etc/modules'")
-        with open("/etc/modules", "r+") as f:
-            for line in f:
-                if "bcm2708-rng" in line:
-                    break
-            else: # not found, we are at the eof
-                call("sudo sh -c 'echo bcm2708-rng >> /etc/modules'")
-
-    # else if Pi 3
-    elif "BCM2709" in pi_hardware_version:
-        call("sudo modprobe bcm2835-rng", shell=True)
-
-        # call("sudo sh -c 'echo bcm2835-rng >> /etc/modules'")
-        with open("/etc/modules", "r") as f:
-            for line in f:
-                if "bcm2835-rng" in line:
-                    break
-            else: # not found, we are at the eof
-                call("sudo sh -c 'echo bcm2835-rng >> /etc/modules'", shell=True)
+    call("sudo apt-get install rng-tools -y")
+    call("sudo systemctl enable rng-tools")
 
 
 def install_strongswan():
