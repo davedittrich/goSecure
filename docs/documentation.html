@@ -125,28 +125,34 @@
                     <h2 class="page-header"><a href="#components">Build Components</a></h2>
                     
                     <br>
+		    <a name="step0"></a>
                     <h3>Step 0: Prerequisites</h3>
-                    Decide on values for the following before starting:
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Variable</th>
-                                <th>Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Client ID</td>
-                                <td>i.e. client1.d2.local</td>
-                            </tr>
-                        </tbody>
-                        <tbody>
-                            <tr>
-                                <td>Client Pre-Shared Key</td>
-                                <td>i.e. "cxvljals@fj09q2jasdf#dsjvk(asdjf"<br>Note: The PSK must be at least 16 characters. The PSK must also be surrounded in double quotes and cannot contain a double quote within.</td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+                    Both the goSecure client and server need secrets -- passwords, pre-shared keys, etc. -- to secure communications and remote access.  Use the <a href="https://pypi.org/project/python-secrets/">python_secrets</a> program as shown here to create an environment for storing these secrets and generate local secrets to be used in following steps to configure the client and server.
+
+		    <pre>[In ~/git/goSecure on develop branch]
+
+$ psec environments create --clone-from secrets/
+environment directory /Users/dittrich/.secrets/goSecure created
+$ psec secrets show --no-redact
++-----------------------+---------------+-------+
+| Variable              | Type          | Value |
++-----------------------+---------------+-------+
+| gosecure_app_password | password      | None  |
+| gosecure_client_psk   | random_base64 | None  |
+| gosecure_pi_password  | password      | None  |
++-----------------------+---------------+-------+
+$ psec secrets generate
+$ psec secrets show --no-redact
++-----------------------+---------------+------------------------------+
+| Variable              | Type          | Value                        |
++-----------------------+---------------+------------------------------+
+| gosecure_app_password | password      | brunt outclass alike turbine |
+| gosecure_client_psk   | random_base64 | WpVQdlV+YMJGAdYL2DsnnSm6     |
+| gosecure_pi_password  | password      | brunt outclass alike turbine |
++-----------------------+---------------+------------------------------+</pre>
+
+                    This last command will remind you of the generated passwords if necessary. Generate new secrets whenever you want to start over (e.g., after returning from a trip where your hardware may have been accessed or copied while outside of your posession). Having a "brake-glass" procedure for refreshing access control authenticators in an emergency is wise.
                     <br>
                     
                     <h3 id="component-server">Step 1: Build Server Side</h3>
@@ -328,7 +334,7 @@
                                                 <ol>
                                                     <li>Install Raspbian Lite Latest onto a SD Card using the instructions under the "WRITING AN IMAGE TO THE SD CARD" section from <a href="https://www.raspberrypi.org/documentation/installation/installing-images/">here</a>.</li>
                                                     <li>Turn on the Raspberry Pi with the SD Card installed.</li>
-                                                    <li>Login with the default credentials (username: "pi" and password: "raspberry").</li>
+						    <li>Log in to the "pi" account using the password you generated in <a href="#step0">Step 0</a>.</li>
                                                 </ol>
                                                 <br>
 
@@ -522,7 +528,7 @@ iface wlan0 inet manual
                                                 <ol>
                                                     <li>Install Raspbian Lite Latest onto a SD Card using the instructions under the "WRITING AN IMAGE TO THE SD CARD" section from <a href="https://www.raspberrypi.org/documentation/installation/installing-images/">here</a>.</li>
                                                     <li>Turn on the Raspberry Pi with the SD Card installed.</li>
-                                                    <li>Login with the default credentials (username: "pi" and password: "raspberry").</li>
+						    <li>Log in to the "pi" account using the password you generated in <a href="#step0">Step 0</a>.</li>
                                                 </ol>
                                                 <br>
 
@@ -691,7 +697,7 @@ network={
                                 <li>Plug in the USB cable from a compatible power source (e.g. from your laptop or a Rasperry Pi power adapter) to the goSecure Client power port.</li>
                                 <li>Wait 60 seconds.</li>
                                 <li>Open a web browser and navigate to "https://setup.gosecure"</li>
-                                <li>Follow the instructions on the web page that appears. The default login username is "admin" and the password is "gosecure". You will be prompted to change them once you login.</li>
+				<li>Follow the instructions on the web page that appears. Log in to the "admin" account using the password you generated in <a href="#step0">Step 0</a>.</li>
                                 <li>You can access your enterprise resources now.</li>
                             </ol>
                             <br>
@@ -731,7 +737,7 @@ network={
                                 <li>Plug in the USB cable from a compatible power source (e.g. from your laptop or a Rasperry Pi power adapter) to the goSecure Client power port.</li>
                                 <li>Wait 60 seconds.</li>
                                 <li>Open a web browser and navigate to "https://setup.gosecure"</li>
-                                <li>Follow the instructions on the web page that appears. The default login username is "admin" and the password is "gosecure". You will be prompted to change them once you login.</li>
+				<li>Follow the instructions on the web page that appears. Log in to the "admin" account using the password you generated in <a href="#step0">Step 0</a>.</li>
                                 <li>You can access your enterprise resources now.</li>
                             </ol>
                             <br>
