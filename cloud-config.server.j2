@@ -1,0 +1,115 @@
+#cloud-config
+
+hostname: gosecure-server
+manage_etc_hosts: true
+
+groups:
+  - gosecure: [pi,pirate]
+users:
+  - name: pi
+    gecos: "goSecure pi"
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    groups: users,docker,video,netdev,gosecure
+    plain_text_passwd: "{{ gosecure_pi_password }}"
+    lock_passwd: false
+    ssh-import-id: None
+    ssh-authorized-keys:
+      - {{ gosecure_pi_pubkey }}
+    ssh_pwauth: true
+    chpasswd: { expire: false }
+  - name: pirate
+    gecos: "pirate"
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    groups: users,docker,video,netdev,gosecure
+    plain_text_passwd: "{{ gosecure_pi_password }}"
+    lock_passwd: false
+    ssh-import-id: None
+    ssh_pwauth: true
+    ssh-authorized-keys:
+      - {{ gosecure_pi_pubkey }}
+    chpasswd: { expire: false }
+
+package_upgrade: false
+
+# Set the locale of the system
+locale: "en_US.UTF-8"
+
+# Set the timezone
+# Value of 'timezone' must exist in /usr/share/zoneinfo
+timezone: "America/Los_Angeles"
+
+# Static IP address
+write_files:
+# - content: |
+#     hostname
+#     clientid
+#     persistent
+#     slaac private
+#     option rapid_commit
+#     option domain_name_servers,domain_name,domain_search,host_name
+#     option classless_static_routes
+#     option ntpservers
+#     option interface_mtu
+#     require dhcp_server_identifier
+#   path: /etc/dhcpcd.conf
+# - content: |
+#     domain-needed
+#     bogus-priv
+#     server=8.8.8.8
+#     server=8.8.4.4
+#     cache-size=4096
+#     local=/home/
+#     expand-hosts
+#     domain=gosecure
+#     dhcp-range=192.168.50.101,192.168.50.200,255.255.255.0,14d
+#     dhcp-option=option:router,192.168.50.1
+#     dhcp-option=252,"\n"
+#     log-facility=/var/log/dnsmasq.log
+#     log-async
+#     log-dhcp
+#   path: /etc/dnsmasq.conf
+# - content: |
+#     auto eth0
+#     allow-hotplug eth0
+#     iface eth0 inet static
+#     address 192.168.50.1
+#     netmask 255.255.255.0
+
+#     auto eth0:1
+#     allow-hotplug eth0:1
+#     iface eth0:1 inet dhcp
+#   path: /etc/network/interfaces.d/eth0
+  - content: |
+      auto wlan0
+      allow-hotplug wlan0
+      iface wlan0 inet manual
+          wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+    path: /etc/network/interfaces.d/wlan0
+  - content: |
+      country=US
+      ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=detdev
+      update_config=1
+      network={
+         ssid="{{ gosecure_client_ssid }}"
+         psk="{{ gosecure_client_psk }}"
+         key_mgmt=WPA_PSK
+      }
+    path: /etc/wpa_supplicant/wpa_supplicant.conf
+
+# Install any additional apt packages you need here
+packages:
+ - ntp
+ - curl
+ - dnsmasq
+ - rng-tools
+
+# These commands will be ran once on first boot only
+runcmd:
+  - 'systemctl enable rng-tools'
+  - 'systemctl restart networking'
+  - 'sudo -u pi wget -P /home/pi https://davedittrich.github.io/goSecure/files/install_scripts/gosecure_server_install_pi.py'
+  - 'systemctl restart avahi-daemon'
+
+# vim: syntax=yaml
