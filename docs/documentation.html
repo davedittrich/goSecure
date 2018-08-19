@@ -104,12 +104,12 @@
                     </p>
                     <br>
                     <p class="lead">
-                        The <b>server</b> component is a multi-homed [laptop/server/cloud instance/Raspberry Pi] that runs strongSwan using the NSA <a href="https://www.nsa.gov/ia/programs/csfc_program/">Commercial Solutions for Classified (CSfC)</a> guidelines for protecting classified data. It is built upon a minimal and hardened Linux instance per DISA <a href="http://iase.disa.mil/stigs/Pages/index.aspx">Security Technical Implementation Guides (STIGs)</a>.
+                        The <b>server</b> component is a multi-homed [laptop/server/cloud instance/Raspberry Pi] that runs strongSwan following the NSA <a href="https://www.nsa.gov/ia/programs/csfc_program/">Commercial Solutions for Classified (CSfC)</a> guidelines. (Ideally, it is built upon a minimal and hardened Linux instance per DISA <a href="http://iase.disa.mil/stigs/Pages/index.aspx">Security Technical Implementation Guides (STIGs)</a>.)
                     </p>
                     <br>
 
                     <p class="lead">
-                        The <b>client</b> component is a Raspberry Pi that runs strongSwan using the NSA CSFC guidelines for protecting classified data and it utilizes its hardware Random Number Generator (RNG). It is built upon a minimal and hardened Linux instance per DISA STIGs.
+                        The <b>client</b> component is a Raspberry Pi that runs strongSwan following the NSA CSFC guidelines and utilizing its hardware Random Number Generator (RNG). (Ideally, it is built upon a minimal and hardened Linux instance per DISA STIGs.)
                         <br><br>
                         The client currently supports 3 modes of operation:
                         <ol>
@@ -128,11 +128,12 @@
 		    <a name="step0"></a>
                     <h3>Step 0: Prerequisites</h3>
 
-                    Both the goSecure client and server need secrets -- passwords, pre-shared keys, etc. -- to secure communications and remote access.  Use the <a href="https://pypi.org/project/python-secrets/">python_secrets</a> program as shown here to create an environment for storing these secrets and generate local secrets to be used in following steps to configure the client and server.
+		    Both the goSecure client and server need secrets -- passwords, pre-shared keys, etc. -- to secure communications and remote access. Using default passwords that come from an open source repository is a bad security practice. These instructions instead use the <a href="https://pypi.org/project/python-secrets/">python_secrets</a> program to create an environment for storing these secrets and then generate local secrets to be used in following steps to configure the client and server.
+		    </p>
 
-		    <pre>[In ~/git/goSecure on develop branch]
+		    From the ~/git/goSecure directory,
 
-$ psec environments create --clone-from secrets/
+		    <pre>$ psec environments create --clone-from secrets/
 environment directory /Users/dittrich/.secrets/goSecure created
 $ psec secrets show --no-redact
 +-----------------------+---------------+-------+
