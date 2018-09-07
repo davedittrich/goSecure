@@ -28,7 +28,7 @@ def enable_ip_forward():
         for line in lines:
             fout.write(line)
 
-    call(["sudo", "sysctl", "-p"])
+    call(["sudo", "sysctl", "-p"], shell=True)
 
 
 def configure_firewall():
@@ -84,8 +84,8 @@ def configure_firewall():
 
 def enable_hardware_random():
     print("goSecure_Client_Script - Enable Hardware Random\n")
-    call("sudo apt-get install rng-tools -y")
-    call("sudo systemctl enable rng-tools")
+    call("sudo apt-get install rng-tools -y", shell=True)
+    call("sudo systemctl enable rng-tools", shell=True)
 
 
 def install_strongswan():
@@ -169,7 +169,7 @@ def configure_strongswan():
             fout.write(line)
 
 
-    call(["sudo", "service", "networking", "restart"])
+    call(["sudo", "service", "networking", "restart"], shell=True)
     time.sleep(30)
 
 def start_strongswan():
@@ -263,8 +263,8 @@ def setup_dhcp_and_dns_server():
         else: # not found, we are at the eof
             call("sudo sh -c 'echo \"192.168.50.1 setup\" >> /etc/hosts'", shell=True)
 
-    call(["sudo", "service", "dnsmasq", "start"])
-    call(["sudo", "update-rc.d", "dnsmasq", "enable"])
+    call(["sudo", "service", "dnsmasq", "start"], shell=True)
+    call(["sudo", "update-rc.d", "dnsmasq", "enable"], shell=True)
 
 def setup_user_interface():
     print("goSecure_Client_Script - Setup User Interface\n")
