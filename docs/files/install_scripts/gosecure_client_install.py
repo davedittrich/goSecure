@@ -10,7 +10,7 @@ def update_os():
     print("goSecure_Client_Script - Update OS\n")
     call("sudo apt-get update", shell=True)
     call("sudo apt-get upgrade -y", shell=True)
-    call("sudo apt-get install tree dnsutils byobu gpm -y", shell=True)
+    call("sudo apt-get install tree dnsutils byobu gpm unzip -y", shell=True)
 
 
 def enable_ip_forward():
