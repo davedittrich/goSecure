@@ -34,14 +34,31 @@ users:
 package_upgrade: false
 
 # Set the locale of the system
-locale: "en_US.UTF-8"
+locale: "{{ gosecure_pi_locale }}"
 
 # Set the timezone
 # Value of 'timezone' must exist in /usr/share/zoneinfo
-timezone: "America/Los_Angeles"
+timezone: "{{ gosecure_pi_timezone }}"
 
-# Static IP address
 write_files:
+  - content: |
+      net.ipv6.conf.all.disable_ipv6=1
+    path: /etc/sysctl.d/local.conf
+  - content: |
+      auto wlan0
+      allow-hotplug wlan0
+      iface wlan0 inet manual
+          wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+    path: /etc/network/interfaces.d/wlan0
+  - content: |
+      country={{ gosecure_pi_wifi_country }}
+      ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+      update_config=1
+      network={
+         ssid="{{ gosecure_client_ssid }}"
+         psk="{{ gosecure_client_psk }}"
+      }
+    path: /etc/wpa_supplicant/wpa_supplicant.conf
   - content: |
       hostname
       clientid
@@ -81,22 +98,6 @@ write_files:
       allow-hotplug eth0:1
       iface eth0:1 inet dhcp
     path: /etc/network/interfaces.d/eth0
-  - content: |
-      auto wlan0
-      allow-hotplug wlan0
-      iface wlan0 inet manual
-          wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-    path: /etc/network/interfaces.d/wlan0
-  - content: |
-      country=US
-      ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=detdev
-      update_config=1
-      network={
-         ssid="{{ gosecure_client_ssid }}"
-         psk="{{ gosecure_client_psk }}"
-         key_mgmt=WPA_PSK
-      }
-    path: /etc/wpa_supplicant/wpa_supplicant.conf
 
 # Install any additional apt packages you need here
 packages:
@@ -105,7 +106,7 @@ packages:
  - dnsmasq
  - rng-tools
 
-# These commands will be ran once on first boot only
+# These commands will be only be run once on first boot
 runcmd:
   - 'systemctl enable rng-tools'
   - 'systemctl restart networking'
