@@ -161,24 +161,28 @@ environment directory /Users/dittrich/.secrets/goSecure created
 $ psec secrets show --no-redact
 +-----------------------+----------+-------+
 | Variable              | Type     | Value |
-+-----------------------+----------+-------+
-| gosecure_app_password | password | None  |
-| gosecure_client_psk   | string   | None  |
-| gosecure_client_ssid  | string   | None  |
-| gosecure_pi_password  | password | None  |
-| gosecure_pi_pubkey    | string   | None  |
-+-----------------------+----------+-------+
++--------------------------+----------+-------+
+| gosecure_app_password    | password | None  |
+| gosecure_client_psk      | string   | None  |
+| gosecure_client_ssid     | string   | None  |
+| gosecure_pi_password     | password | None  |
+| gosecure_pi_pubkey       | string   | None  |
+| gosecure_pi_timezone     | string   | None  |
+| gosecure_pi_wifi_country | string   | None  |
++--------------------------+----------+-------+
 $ psec secrets generate
 $ psec secrets show --no-redact
-+-----------------------+----------+------------------------------+
-| Variable              | Type     | Value                        |
-+-----------------------+----------+------------------------------+
-| gosecure_app_password | password | brunt outclass alike turbine |
-| gosecure_client_psk   | string   | None                         |
-| gosecure_client_ssid  | string   | None                         |
-| gosecure_pi_password  | password | brunt outclass alike turbine |
-| gosecure_pi_pubkey    | string   | None                         |
-+-----------------------+----------+------------------------------+</pre>
++--------------------------+----------+------------------------------+
+| Variable                 | Type     | Value                        |
++--------------------------+----------+------------------------------+
+| gosecure_app_password    | password | brunt outclass alike turbine |
+| gosecure_client_psk      | string   | None                         |
+| gosecure_client_ssid     | string   | None                         |
+| gosecure_pi_password     | password | brunt outclass alike turbine |
+| gosecure_pi_pubkey       | string   | None                         |
+| gosecure_pi_timezone     | string   | None                         |
+| gosecure_pi_wifi_country | string   | None                         |
++--------------------------+----------+------------------------------+</pre>
 
                     Note that the <tt>string</tt> variables were not
                     automatically generated. These are external pieces of
@@ -189,21 +193,24 @@ $ psec secrets show --no-redact
                     <tt>pi</tt> account.) Set these manually like this:</p>
 
                     <pre>$ psec secrets set gosecure_pi_pubkey=@~/.ssh/new_rsa.pub
-$ psec secrets set gosecure_client_psk="atjhK5AlsQMw3Zh" gosecure_client_ssid="YourWiFiSSID"
+$ psec secrets set gosecure_client_psk="atjhK5AlsQMw3Zh" gosecure_client_ssid="YourWiFiSSID" \
+> gosecure_pi_timezone="America/Los_Angeles" gosecure_pi_wifi_country="US"
 $ psec secrets show --no-redact --fit-width
-+-----------------------+----------+------------------------------------------------------------------------------------------+
-| Variable              | Type     | Value                                                                                    |
-+-----------------------+----------+------------------------------------------------------------------------------------------+
-| gosecure_app_password | password | brunt outclass alike turbine                                                             |
-| gosecure_client_psk   | string   | atjhK5AlsQMw3Zh
-| gosecure_client_ssid  | string   | YourWiFiSSID                                                                             |
-| gosecure_pi_password  | password | brunt outclass alike turbine                                                             |
-| gosecure_pi_pubkey    | string   | ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC+qUIucrPvRkTmY0tgxr9ac/VtBUHhYHfOdDVpU99AcryLMWiU |
-|                       |          | uQ2/NVikfOfPo5mt9YTQyqRbeBzKlNgbHnsxh0AZatjhK5AlsQMw3ZhZUcLYZbt7szuQy8ineN0potlCJoVaMSOb |
-|                       |          | 9htf9gAPvzwxUnHxg35jPCzAXYAi3Erc6y338+CL0XxQvCogXOA+MwH7wZGgdT3WpupLG/7HAr/3KJEQQk1FlS2m |
-|                       |          | Rd+WuewnLbKkqBP21N+48ccq6XhEhAmlzzr9SENw5DMmrvMAYIYkoTwUeD3Qx4YebjFkCxZw+w7AafEFn0Kz6vCX |
-|                       |          | 4mp/6ZF/Ko+o04HM2sVr6wtCu2dB dittrich@localhost                                          |
-+-----------------------+----------+------------------------------------------------------------------------------------------+</pre>
++--------------------------+----------+------------------------------------------------------------------------------------------+
+| Variable                 | Type     | Value                                                                                    |
++--------------------------+----------+------------------------------------------------------------------------------------------+
+| gosecure_app_password    | password | brunt outclass alike turbine                                                             |
+| gosecure_client_psk      | string   | atjhK5AlsQMw3Zh                                                                          |
+| gosecure_client_ssid     | string   | YourWiFiSSID                                                                             |
+| gosecure_pi_password     | password | brunt outclass alike turbine                                                             |
+| gosecure_pi_pubkey       | string   | ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC+qUIucrPvRkTmY0tgxr9ac/VtBUHhYHfOdDVpU99AcryLMWiU |
+|                          |          | uQ2/NVikfOfPo5mt9YTQyqRbeBzKlNgbHnsxh0AZatjhK5AlsQMw3ZhZUcLYZbt7szuQy8ineN0potlCJoVaMSOb |
+|                          |          | 9htf9gAPvzwxUnHxg35jPCzAXYAi3Erc6y338+CL0XxQvCogXOA+MwH7wZGgdT3WpupLG/7HAr/3KJEQQk1FlS2m |
+|                          |          | Rd+WuewnLbKkqBP21N+48ccq6XhEhAmlzzr9SENw5DMmrvMAYIYkoTwUeD3Qx4YebjFkCxZw+w7AafEFn0Kz6vCX |
+|                          |          | 4mp/6ZF/Ko+o04HM2sVr6wtCu2dB dittrich@localhost                                          |
+| gosecure_pi_timezone     | string   | America/Los_Angeles                                                                      |
+| gosecure_pi_wifi_country | string   | US                                                                                       |
++--------------------------+----------+------------------------------------------------------------------------------------------+</pre>
                     <em>
                         This last command will remind you of the generated
                         passwords if necessary. Generate new secrets whenever
