@@ -269,8 +269,8 @@ def setup_dhcp_and_dns_server():
 def setup_user_interface():
     print("goSecure_Client_Script - Setup User Interface\n")
     setup_user_interface_commands = textwrap.dedent("""\
-        sudo apt-get install libsystemd-dev python3-systemd python3-pip -y
-        sudo pip3 install RPi.GPIO systemd Flask Flask-WTF Flask-Login mechanicalsoup
+        sudo apt-get install libsystemd-dev libxslt1-dev libxml2-dev python3-systemd python3-pip -y
+        sudo python3 -m pip install RPi.GPIO systemd Flask Flask-WTF Flask-Login mechanicalsoup
         wget -P /home/pi https://github.com/davedittrich/goSecure/archive/master.zip
         unzip /home/pi/master.zip
         rm /home/pi/master.zip
