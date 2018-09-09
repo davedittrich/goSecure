@@ -201,6 +201,10 @@ def start_strongswan():
     # add temporary route for local eth0 interface
     call("sudo ip route add table 220 192.168.50.0/24 dev eth0", shell=True)
 
+    if not os.path.exists('/etc/rc.local'):
+        call("sudo sh -c \"echo '#!/bin/sh -e' > /etc/rc.local\"", shell=True)
+        call("sudo chmod 755 /etc/rc.local", shell=True)
+
     # TODO(dittrich): This is a hack to get LED functioning.
     # The /etc/rc.local file should be properly templated (e.g., with Jinja)
     route_on_boot_commands = textwrap.dedent("""\
@@ -281,8 +285,8 @@ def setup_dhcp_and_dns_server():
 def setup_user_interface():
     print("goSecure_Client_Script - Setup User Interface\n")
     setup_user_interface_commands = textwrap.dedent("""\
-        sudo apt-get install libsystemd-dev libxslt1-dev libyaml-dev libxml2-dev python3-systemd python3-pip -y
-        sudo python3 -m pip install RPi.GPIO systemd Flask Flask-WTF Flask-Login mechanicalsoup
+        sudo apt-get install libsystemd-dev libxslt1-dev libyaml-dev libxml2-dev -y
+        sudo /usr/local/bin/python3.6 -m pip install RPi.GPIO systemd Flask Flask-WTF Flask-Login mechanicalsoup
         wget -P /home/pi https://github.com/davedittrich/goSecure/archive/master.zip
         unzip /home/pi/master.zip
         rm /home/pi/master.zip
@@ -299,14 +303,15 @@ def setup_user_interface():
     gosecure_service_conf = textwrap.dedent("""\
         [Unit]
         Description=goSecure Web GUI Service
-        After=multi-user.target
+        Wants=network-online.target
+        After=network.target network-online.target
 
         [Service]
         Type=idle
         ExecStart=/usr/local/bin/python3.6 /home/pi/goSecure_Web_GUI/gosecure_app.py
 
         [Install]
-        WantedBy=multi-user.target""")
+        WantedBy=default.target""")
 
     with open("/lib/systemd/system/gosecure.service", "w") as f:
         f.write(gosecure_service_conf)
@@ -339,7 +344,7 @@ def main():
 
     call("echo 'Rebooting now... please wait 30-60 seconds and navigate to https://setup.gosecure'", shell=True)
     time.sleep(10)
-    call("sudo shutdown -h now", shell=True)
+    call("sudo shutdown -r now", shell=True)
 
 if __name__ == "__main__":
     main()
