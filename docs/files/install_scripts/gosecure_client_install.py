@@ -229,7 +229,9 @@ def start_strongswan():
 def setup_dhcp_and_dns_server():
     print("goSecure_Client_Script - Setup DHCP and DNS Server\n")
     call("sudo apt-get update", shell=True)
-    call("sudo apt-get install dnsmasq -y", shell=True)
+    call("sudo apt-get -o Dpkg::Options::='--force-confdef' " +
+         "-o Dpkg::Options::='--force-confold' " +
+         "install dnsmasq -y", shell=True)
 
     dhcp_and_dns_conf = textwrap.dedent("""\
         ######## dns ########
