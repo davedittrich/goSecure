@@ -132,12 +132,19 @@ packages:
  - curl
  - dnsmasq
  - rng-tools
+ - rpi-update
 
 # These commands will be only be run once on first boot
 runcmd:
+  - 'rpi-update'
   - 'systemctl enable rng-tools'
-  - 'systemctl restart networking'
-  - 'sudo -u pi wget -P /home/pi https://davedittrich.github.io/goSecure/files/install_scripts/gosecure_client_install.py'
+  - 'service networking restart'
+  - 'ifdown eth0'
+  - 'ifup eth0'
   - 'systemctl restart avahi-daemon'
+  - 'sudo -u pi wget -P /home/pi https://davedittrich.github.io/goSecure/files/install_scripts/gosecure_client_install.py'
+  - 'systemctl status dnsmasq'
+  - 'ifconfig eth0'
+  - 'echo "[+] Setup completed: log in and reboot after recording SSH key fingerprint information"'
 
 # vim: syntax=yaml
