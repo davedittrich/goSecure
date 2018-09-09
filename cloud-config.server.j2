@@ -1,7 +1,7 @@
 #cloud-config
 
 hostname: gosecure-server
-manage_etc_hosts: true
+manage_etc_hosts: false
 
 groups:
   - gosecure: [pi,pirate]
@@ -41,6 +41,20 @@ locale: "{{ gosecure_pi_locale }}"
 timezone: "{{ gosecure_pi_timezone }}"
 
 write_files:
+  - content: |
+     # File created by cloud-init
+     # https://davedittrich.github.io/goSecure
+
+     127.0.1.1 gosecure-server.localdomain gosecure-server
+     127.0.0.1 localhost
+
+     ::1 ipv6-localhost ipv6-loopback
+     fe00::0 ipv6-localnet
+     ff00::0 ipv6-mcastprefix
+     ff02::1 ipv6-allnodes
+     ff02::2 ipv6-allrouters
+     ff02::3 ipv6-allhosts
+    path: /etc/hosts
   - content: |
       net.ipv6.conf.all.disable_ipv6=1
     path: /etc/sysctl.d/local.conf
