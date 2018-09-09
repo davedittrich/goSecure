@@ -38,7 +38,7 @@
                 <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                     <span class="sr-only">Toggle navigation</span>
                 </a>
-                
+
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
                     <li>
@@ -49,10 +49,10 @@
                     </li>
                 </ul>
             </div>
-                
+
             </nav>
         </header>
-        
+
         <aside class="main-sidebar">
             <div class="sidebar" id="scrollspy">
 
@@ -131,10 +131,10 @@
                     </p>
 
                 </section>
-                
+
                 <section id="components" data-spy="scroll" data-target="#scrollspy-components">
                     <h2 class="page-header"><a href="#components">Build Components</a></h2>
-                    
+
                     <br>
                     <a name="step0"></a>
                     <h3>Step 0: Prerequisites</h3>
@@ -154,7 +154,10 @@
                     <tt>psec</tt> is a shorter alias for
                     <tt>python_secrets</tt>).</p>
 
-                    From the <tt>~/git/goSecure</tt> directory, do the following:</p>
+                    <p>From the <tt>~/git/goSecure</tt> directory, perform the following steps.</p>
+
+                    <p>Start by creating an environment to store the configuration variables and
+                    secrets needed to configure the client and server components of the system.</p>
 
                     <pre>$ psec environments create --clone-from secrets/
 new password variable "gosecure_pi_password" is not defined
@@ -165,60 +168,93 @@ new string variable "gosecure_pi_pubkey" is not defined
 new string variable "gosecure_pi_locale" is not defined
 new string variable "gosecure_pi_timezone" is not defined
 new string variable "gosecure_pi_wifi_country" is not defined
-environment "goSecure" (/Users/dittrich/.secrets/goSecure) created
-$ psec secrets show --no-redact
-+-----------------------+----------+-------+
-| Variable              | Type     | Value |
-+--------------------------+----------+-------+
-| gosecure_app_password    | password | None  |
-| gosecure_client_psk      | string   | None  |
-| gosecure_client_ssid     | string   | None  |
-| gosecure_pi_password     | password | None  |
-| gosecure_pi_pubkey       | string   | None  |
-| gosecure_pi_timezone     | string   | None  |
-| gosecure_pi_wifi_country | string   | None  |
-+--------------------------+----------+-------+
-$ psec secrets generate
-$ psec secrets show --no-redact
-+--------------------------+----------+------------------------------+
-| Variable                 | Type     | Value                        |
-+--------------------------+----------+------------------------------+
-| gosecure_app_password    | password | brunt outclass alike turbine |
-| gosecure_client_psk      | string   | None                         |
-| gosecure_client_ssid     | string   | None                         |
-| gosecure_pi_password     | password | brunt outclass alike turbine |
-| gosecure_pi_pubkey       | string   | None                         |
-| gosecure_pi_timezone     | string   | None                         |
-| gosecure_pi_wifi_country | string   | None                         |
-+--------------------------+----------+------------------------------+</pre>
+new string variable "gosecure_pi_keyboard_model" is not defined
+new string variable "gosecure_pi_keyboard_layout" is not defined
+environment "goSecure" (/Users/dittrich/.secrets/goSecure) created</pre>
 
-                    Note that the <tt>string</tt> variables were not
+                    <p>Initially, none of the variables and/or secrets are set.</p>
+
+                    <pre>$ psec secrets show --no-redact
++-----------------------------+----------+-------+
+| Variable                    | Type     | Value |
++-----------------------------+----------+-------+
+| gosecure_app_password       | password | None  |
+| gosecure_client_psk         | string   | None  |
+| gosecure_client_ssid        | string   | None  |
+| gosecure_pi_password        | password | None  |
+| gosecure_pi_pubkey          | string   | None  |
+| gosecure_pi_timezone        | string   | None  |
+| gosecure_pi_wifi_country    | string   | None  |
+| gosecure_pi_keyboard_model  | string   | None  |
+| gosecure_pi_keyboard_layout | string   | None  |
++-----------------------------+----------+-------+</pre>
+
+                    <p>Since default passwords are being avoided, generate the
+                    secrets that will be needed to configure the client and
+                    server components of for the VPN.</p>
+
+                    <pre>$ psec secrets generate
+$ psec secrets show --no-redact
++-----------------------------+----------+------------------------------+
+| Variable                    | Type     | Value                        |
++-----------------------------+----------+------------------------------+
+| gosecure_app_password       | password | brunt outclass alike turbine |
+| gosecure_client_psk         | string   | None                         |
+| gosecure_client_ssid        | string   | None                         |
+| gosecure_pi_password        | password | brunt outclass alike turbine |
+| gosecure_pi_pubkey          | string   | None                         |
+| gosecure_pi_timezone        | string   | None                         |
+| gosecure_pi_wifi_country    | string   | None                         |
+| gosecure_pi_keyboard_model  | string   | None                         |
+| gosecure_pi_keyboard_layout | string   | None                         |
++-----------------------------+----------+------------------------------+</pre>
+
+                    <p>Note that the <tt>string</tt> variables were not
                     automatically generated. These are external pieces of
                     information necessary for accessing external devices (e.g.,
                     for internet access using WiFi tethering) or are previously
                     generated secrets (e.g., the SSH key you wish to use for
                     granting access to the goSecure Raspberry Pi client
-                    <tt>pi</tt> account.) Set these manually like this:</p>
+                    <tt>pi</tt> account.) These can be set manually like this:</p>
 
                     <pre>$ psec secrets set gosecure_pi_pubkey=@~/.ssh/new_rsa.pub
 $ psec secrets set gosecure_client_psk="atjhK5AlsQMw3Zh" gosecure_client_ssid="YourWiFiSSID" \
-> gosecure_pi_timezone="America/Los_Angeles" gosecure_pi_wifi_country="US"
-$ psec secrets show --no-redact --fit-width
-+--------------------------+----------+------------------------------------------------------------------------------------------+
-| Variable                 | Type     | Value                                                                                    |
-+--------------------------+----------+------------------------------------------------------------------------------------------+
-| gosecure_app_password    | password | brunt outclass alike turbine                                                             |
-| gosecure_client_psk      | string   | atjhK5AlsQMw3Zh                                                                          |
-| gosecure_client_ssid     | string   | YourWiFiSSID                                                                             |
-| gosecure_pi_password     | password | brunt outclass alike turbine                                                             |
-| gosecure_pi_pubkey       | string   | ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC+qUIucrPvRkTmY0tgxr9ac/VtBUHhYHfOdDVpU99AcryLMWiU |
-|                          |          | uQ2/NVikfOfPo5mt9YTQyqRbeBzKlNgbHnsxh0AZatjhK5AlsQMw3ZhZUcLYZbt7szuQy8ineN0potlCJoVaMSOb |
-|                          |          | 9htf9gAPvzwxUnHxg35jPCzAXYAi3Erc6y338+CL0XxQvCogXOA+MwH7wZGgdT3WpupLG/7HAr/3KJEQQk1FlS2m |
-|                          |          | Rd+WuewnLbKkqBP21N+48ccq6XhEhAmlzzr9SENw5DMmrvMAYIYkoTwUeD3Qx4YebjFkCxZw+w7AafEFn0Kz6vCX |
-|                          |          | 4mp/6ZF/Ko+o04HM2sVr6wtCu2dB dittrich@localhost                                          |
-| gosecure_pi_timezone     | string   | America/Los_Angeles                                                                      |
-| gosecure_pi_wifi_country | string   | US                                                                                       |
+> gosecure_pi_timezone="America/Los_Angeles" gosecure_pi_wifi_country="US" \
+> gosecure_pi_keyboard_model="pc105" gosecure_pi_keyboard_layout="us"</pre>
+
+                    <p>If you prefer to be prompted for each variable, do so this way.</p>
+
+                    <pre>$ psec -q secrets set --undefined
+Pre-shared key for goSecure client WiFi AP? [None]: atjhK5AlsQMw3Zh
+SSID for goSecure client WiFi AP? [None]: YourWiFiSSID
+SSH public key for accessing "pi" account? [None]: @~/.ssh/new_rsa.pub
+Locale (e.g., "en_US.UTF-8")? [None]: en_US.UTF-8
+Timezone (e.g., "America/Los_Angeles")? [None]: America/Los_Angeles
+WiFi country code (e.g., "US")? [None]: US
+Keyboard model (e.g., "pc105")? [None]: pc105
+Keyboard layout (e.g., "us")? [None]: us</pre>
+
+                    <p>You may see the values this way:</p>
+
+                    <pre>$ psec secrets show --no-redact --fit-width
++-----------------------------+----------+------------------------------------------------------------------------------------------+
+| Variable                    | Type     | Value                                                                                    |
++-----------------------------+----------+------------------------------------------------------------------------------------------+
+| gosecure_app_password       | password | brunt outclass alike turbine                                                             |
+| gosecure_client_psk         | string   | atjhK5AlsQMw3Zh                                                                          |
+| gosecure_client_ssid        | string   | YourWiFiSSID                                                                             |
+| gosecure_pi_password        | password | brunt outclass alike turbine                                                             |
+| gosecure_pi_pubkey          | string   | ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC+qUIucrPvRkTmY0tgxr9ac/VtBUHhYHfOdDVpU99AcryLMWiU |
+|                             |          | uQ2/NVikfOfPo5mt9YTQyqRbeBzKlNgbHnsxh0AZatjhK5AlsQMw3ZhZUcLYZbt7szuQy8ineN0potlCJoVaMSOb |
+|                             |          | 9htf9gAPvzwxUnHxg35jPCzAXYAi3Erc6y338+CL0XxQvCogXOA+MwH7wZGgdT3WpupLG/7HAr/3KJEQQk1FlS2m |
+|                             |          | Rd+WuewnLbKkqBP21N+48ccq6XhEhAmlzzr9SENw5DMmrvMAYIYkoTwUeD3Qx4YebjFkCxZw+w7AafEFn0Kz6vCX |
+|                             |          | 4mp/6ZF/Ko+o04HM2sVr6wtCu2dB dittrich@localhost                                          |
+| gosecure_pi_timezone        | string   | America/Los_Angeles                                                                      |
+| gosecure_pi_wifi_country    | string   | US                                                                                       |
+| gosecure_pi_keyboard_model  | string   | pc105                                                                                    |
+| gosecure_pi_keyboard_layout | string   | us                                                                                       |
 +--------------------------+----------+------------------------------------------------------------------------------------------+</pre>
+                    <p>
                     <em>
                         This last command will remind you of the generated
                         passwords if necessary. Generate new secrets whenever
@@ -231,10 +267,30 @@ $ psec secrets show --no-redact --fit-width
                     </em>
                     </p>
 
+                    <p>Now that all the variables and secrets have been generated and/or set, you are ready to begin configuring the client and server components of the goSecure VPN. There is a helper <tt>Makefile</tt> that allows you to use the Unix command <tt>make</tt> to perform multiple complex steps using simple targets specified as arguments to the <tt>make</tt> command. You can get help on the targets available using the following command:</p>
+
+                    <pre>$ make help
+usage: make target [...]
+
+TARGETS:
+cloud-configs - generate cloud-config files from template "cloud-config.j2"
+client-sd - create SD card for goSecure client
+server-sd - create SD card for goSecure server
+clean - delete temporary files
+hypriot-img - download hypriotos-rpi-v1.9.0.img.zip file, check SHA256 sum, unzip
+
+DEVELOPMENT/DEBUGGING TARGETS:
+variables - show variables
+debug-server - copies current code to server and restarts service
+
+To generate new secrets, run "psec secrets generate"
+To set undefined string secrets, run "psec secrets set --undefined"</pre>
+
+
                     <h3 id="component-server">Step 1: Build Server Side</h3>
                         <p>Note: The server component build instructions are an example that can be used by affiliates that desire a complete solution, but the client component can interoperate with any VPN server that can be configured using the NSA CSFC guidelines.</p>
                     <br>
-                    
+
                     <div class="box box-solid">
                         <div class="box-header with-border">
                             <h3 class="box-title">Select a server side deployment option:</h3>
@@ -732,9 +788,9 @@ iface wlan0 inet manual
                         <!-- /.box-body -->
                     </div>
                     <br>
-                    
+
                     <h3 id="component-client">Step 2: Build Client Side</h3>
-        
+
                     <div class="box box-solid">
                         <div class="box-header with-border">
                             <h3 class="box-title">Select a client side deployment option:</h3>
@@ -1057,14 +1113,14 @@ network={
                             </ol>
                         </ol>
                 </section>
-    
+
                 <br>
-                    
+
                 <section id="documentation" data-spy="scroll" data-target="#scrollspy-documentation">
                     <h2 class="page-header"><a href="#documentation">Documentation</a></h2>
-                    
+
                     <br>
-                    
+
                     <h3 id="documentation-network">Network:</h3>
                     <p class="lead">
                         Network flow diagram:<br><br>
@@ -1072,9 +1128,9 @@ network={
                         <br>
                     </p>
                     <br>
-                    
+
                     <h3 id="documentation-instructions-user-client">Client - User Instructions:</h3>
-                    
+
                     <br>
                         <ol>
                             Initial Setup:
@@ -1097,7 +1153,7 @@ network={
                             </ol>
                         </ol>
                     <br>
-                    
+
                     <h3 id="documentation-client-api">API</h3>
                     <h4>goSecure Client REST API examples using curl</h4>
                     <br>
@@ -1138,9 +1194,9 @@ network={
                             </tr>
                         </tbody>
                     </table>
-                    
+
                     <br>
-                    
+
                 </section>
 
                 <section id="faq">
@@ -1167,7 +1223,7 @@ network={
                         <br> Nothing in this Work is intended to constitute an endorsement, explicit or implied, by the U.S. Government of any particular manufacturer's product or service.
                         <br>
                         <br>
-                    
+
                         <h3>Disclaimer of Endorsement</h3><br>
                         Reference herein to any specific commercial product, process, or service by trade name, trademark, manufacturer, or otherwise, in this Work does not constitute an endorsement, recommendation, or favoring by the United States Government and shall not be used for advertising or product endorsement purposes.
                     </p>
