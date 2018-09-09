@@ -272,12 +272,11 @@ def setup_dhcp_and_dns_server():
 
     # call("sudo sh -c 'echo \"192.168.50.1 setup\" >> /etc/hosts'", shell=True)
     # add domain name to local dns lookup file
-    with open("/etc/hosts", "r+") as f:
-        for line in f:
-            if "192.168.50.1 setup" in line:
-                break
-        else: # not found, we are at the eof
-            call("sudo sh -c 'echo \"192.168.50.1 setup\" >> /etc/hosts'", shell=True)
+    dns = "192.168.50.1 setup"
+    with open("/etc/hosts", "a+") as f:
+        f.seek(0)
+        if not any(dns == x.rstrip() for x in f):
+            f.write(dns + '\n')
 
     call("sudo systemctl enable dnsmasq", shell=True)
     call("sudo systemctl start dnsmasq", shell=True)
