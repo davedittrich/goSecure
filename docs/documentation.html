@@ -97,16 +97,16 @@
                         <b>goSecure</b> is an easy to use and portable Virtual Private Network (VPN) solution.
                         <br><br>
                         The system consists of a single server and one or many clients.
-                        <a href="https://www.strongswan.org/">strongSwan</a> is used to establish a Suite B IPsec tunnel with pre-shared keys between the server and client(s).
+                        <a href="https://www.strongswan.org/">strongSwan</a> is used to establish an IPsec tunnel with pre-shared keys between the server and client(s).
                     </p>
                     <br>
                     <p class="lead">
-                        The <b>server</b> component is a multi-homed [laptop/server/cloud instance/Raspberry Pi] that runs strongSwan following the NSA <a href="https://www.nsa.gov/ia/programs/csfc_program/">Commercial Solutions for Classified (CSfC)</a> guidelines. (Ideally, it is built upon a minimal and hardened Linux instance per DISA <a href="http://iase.disa.mil/stigs/Pages/index.aspx">Security Technical Implementation Guides (STIGs)</a>.)
+                        The <b>server</b> component is a multi-homed [laptop/server/cloud instance/Raspberry Pi] that runs strongSwan.
                     </p>
                     <br>
 
                     <p class="lead">
-                        The <b>client</b> component is a Raspberry Pi that runs strongSwan following the NSA CSFC guidelines and utilizing its hardware Random Number Generator (RNG). (Ideally, it is built upon a minimal and hardened Linux instance per DISA STIGs.)
+                        The <b>client</b> component is a Raspberry Pi that runs strongSwan utilizing its hardware Random Number Generator (RNG).
                         <br><br>
                         The client currently supports 3 modes of operation:
                         <ol>
@@ -127,14 +127,26 @@
                     <br>
                     <br>
 
-                    <em><a href="https://github.com/davedittrich/goSecure">This
-                            fork of goSecure</a> has been ported to Python 3
-                        and current Python modules, enhanced to integrate the
-                        <a
-                            href="https://pypi.org/project/python-secrets/"><tt>python_secrets</tt></a>
-                        program, and this documentation updated. This effort
-                        was supported in part by a grant from the Comcast Innovation
-                        Fund.
+                    <p>
+                    <em>
+                        The original goSecure implementation was intended for use by federal
+                        government entities who have access to non-public software and documentation
+                        (e.g., a minimal Linux instance, hardened per DISA
+                        <a href="http://iase.disa.mil/stigs/Pages/index.aspx">Security Technical
+                            Implementation Guides (STIGs)</a>, following the NSA
+                        <a href="https://www.nsa.gov/ia/programs/csfc_program/">Commercial
+                            Solutions for Classified (CSfC)</a> guidelines.)
+
+                        <br>
+                        <br>
+
+                        <a href="https://github.com/davedittrich/goSecure">This fork of goSecure</a>
+                        uses publicly available operating systems and configurations following
+                        open source security guidance and practices.  It has also been ported to
+                        Python 3 and current Python modules, enhanced to integrate the
+                        <a href="https://pypi.org/project/python-secrets/"><tt>python_secrets</tt></a>
+                        program, and this documentation updated. The effort to do this
+                        was supported in part by a grant from the Comcast Innovation Fund.
                     </em>
                     </p>
 
