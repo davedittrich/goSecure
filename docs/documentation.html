@@ -286,6 +286,14 @@ debug-server - copies current code to server and restarts service
 To generate new secrets, run "psec secrets generate"
 To set undefined string secrets, run "psec secrets set --undefined"</pre>
 
+                    <p>The SD cards for both the client and the server have shared information, use the same passwords, etc. The default password is replaced by the one generated earlier and will be different than any other deployment. This is done using the <a href="http://jinja.pocoo.org/">Jinja</a> template engine. Raspberry Pi deployments use the <a href="https://blog.hypriot.com/downloads/">HypriotOS</a> Raspbian derivative that includes <a href="https://cloud-init.io/"><tt>cloud-init</tt></a> for boot-time customization. Generate the templates to be used for the client and sever:</p>
+
+
+                    <pre>$ make cloud-configs
+psec template cloud-config.client.j2 /Users/dittrich/.secrets/goSecure/tmp/cloud-config.client
+psec template cloud-config.server.j2 /Users/dittrich/.secrets/goSecure/tmp/cloud-config.server</pre>
+
+
 
                     <h3 id="component-server">Step 1: Build Server Side</h3>
                         <p>Note: The server component build instructions are an example that can be used by affiliates that desire a complete solution, but the client component can interoperate with any VPN server that can be configured using the NSA CSFC guidelines.</p>
@@ -833,7 +841,8 @@ iface wlan0 inet manual
                                                 <li>Install OS</li>
                                                 <ol>
                                                     <li>Insert an SD card and make sure you know its associated device name.
-                                                    <li>Run <tt>make client-sd</tt>.
+                                                    <li>Ensure the <a href="#downloadHypriot">Hypriot OS image is ready</a>.
+                                                    <li>Run <a href="#flashHypriot"><tt>make client-sd</tt></a>.
                                                     <li>Turn on the Raspberry Pi with the SD Card installed.</li>
                                                     <li>Log in to the <tt>pi</tt> account using the password you generated in <a href="#step0">Step 0</a>.</li>
                                                 </ol>
@@ -1128,6 +1137,60 @@ network={
                         <br>
                     </p>
                     <br>
+
+                    <h3 id="documentation-network">Pre-configuration of HypriotOS:</h3>
+                    <p class="lead">
+                    <a name="downloadHypriot"></a>
+                        <pre>$ make hypriot-img
+wget -nc https://github.com/hypriot/image-builder-rpi/releases/download/v1.9.0/hypriotos-rpi-v1.9.0.img.zip
+--2018-09-09 12:07:19--  https://github.com/hypriot/image-builder-rpi/releases/download/v1.9.0/hypriotos-rpi-v1.9.0.img.zip
+Resolving github.com (github.com)... 192.30.255.112, 192.30.255.113
+Connecting to github.com (github.com)|192.30.255.112|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://github-production-release-asset-2e65be.s3.amazonaws.com/49221370/4f707dc4-4b28-11e8-851a-5571d179f48f?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20180909%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20180909T190717Z&X-Amz-Expires=300&X-Amz-Signature=9573a5242bb9219f934469354fbf64ea4ccc68efa0cd4ec6bd4e91ba38240a18&X-Amz-SignedHeaders=host&actor_id=0&response-content-disposition=attachment%3B%20filename%3Dhypriotos-rpi-v1.9.0.img.zip&response-content-type=application%2Foctet-stream [following]
+--2018-09-09 12:07:19--  https://github-production-release-asset-2e65be.s3.amazonaws.com/49221370/4f707dc4-4b28-11e8-851a-5571d179f48f?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20180909%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20180909T190717Z&X-Amz-Expires=300&X-Amz-Signature=9573a5242bb9219f934469354fbf64ea4ccc68efa0cd4ec6bd4e91ba38240a18&X-Amz-SignedHeaders=host&actor_id=0&
+response-content-disposition=attachment%3B%20filename%3Dhypriotos-rpi-v1.9.0.img.zip&response-content-type=application%2Foctet-stream
+Resolving github-production-release-asset-2e65be.s3.amazonaws.com (github-production-release-asset-2e65be.s3.amazonaws.com)... 52.216.17.24
+Connecting to github-production-release-asset-2e65be.s3.amazonaws.com (github-production-release-asset-2e65be.s3.amazonaws.com)|52.216.17.24|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 313413047 (299M) [application/octet-stream]
+Saving to: ‘hypriotos-rpi-v1.9.0.img.zip’
+
+hypriotos-rpi-v1.9.0.img.zip                        100%[======================================================================================>] 298.89M  2.99MB/s    in 86s
+
+2018-09-09 12:08:46 (3.48 MB/s) - ‘hypriotos-rpi-v1.9.0.img.zip’ saved [313413047/313413047]
+wget -nc https://github.com/hypriot/image-builder-rpi/releases/download/v1.9.0/hypriotos-rpi-v1.9.0.img.zip.sha256
+File ‘hypriotos-rpi-v1.9.0.img.zip.sha256’ already there; not retrieving.
+
+sha256sum -c hypriotos-rpi-v1.9.0.img.zip.sha256
+hypriotos-rpi-v1.9.0.img.zip: OK
+Archive:  hypriotos-rpi-v1.9.0.img.zip
+  inflating: hypriotos-rpi-v1.9.0.img</pre>
+                       <br>
+
+                       <a name="flashHypriot"></a>
+                       <pre>$ make client-sd
+flash --userdata /Users/dittrich/.secrets/goSecure/tmp/cloud-config.client hypriotos-rpi-v1.9.0.img
+
+Is /dev/disk3 correct? y
+Unmounting /dev/disk3 ...
+Unmount of all volumes on disk3 was successful
+Unmount of all volumes on disk3 was successful
+Flashing hypriotos-rpi-v1.9.0.img to /dev/rdisk3 ...
+Password:
+1000MiB 0:01:26 [11.5MiB/s] [==================================================================================================================>] 100%
+0+16000 records in
+0+16000 records out
+1048576000 bytes (1.0 GB, 1000 MiB) copied, 82.7923 s, 12.7 MB/s
+Mounting Disk
+Mounting /dev/disk3 to customize...
+Copying cloud-init /Users/dittrich/.secrets/goSecure/tmp/cloud-config.client to /Volumes/HypriotOS/user-data ...
+Unmounting /dev/disk3 ...
+"disk3" unmounted.
+"disk3" ejected.
+Finished.</pre>
+                       <br>
+                    </p>
 
                     <h3 id="documentation-instructions-user-client">Client - User Instructions:</h3>
 
