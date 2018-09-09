@@ -543,11 +543,181 @@ iface wlan0 inet manual
                                                     <li><tt>sudo reboot</tt></li>
                                                     <li>SSH into the goSecure Server</li>
                                                     <li><tt>sudo systemctl disable ssh</tt></li>
-                                                    <li><tt>sudo init 0</tt></li>
+                                                    <li><tt>sudo /sbin/shutdown -h now</tt></li>
                                                 </ol>
                                                 <br>
                                                     </ol>
 
+                                                </ol>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel box box-primary">
+                                    <div class="box-header with-border">
+                                        <h4 class="box-title">
+                                          <a data-toggle="collapse" data-parent="#server-accordion" href="#server-collapseFour" class="collapsed" aria-expanded="false">
+                                            Raspberry Pi (DEPRECATED)
+                                          </a>
+                                        </h4>
+                                    </div>
+                                    <div id="server-collapseFour" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                        <div class="box-body">
+                                            <ol type="1">
+                                                <li>Prerequisites</li>
+                                                <ul>
+                                                    <li>Hardware</li>
+                                                    <ul>
+                                                        <li>Raspberry Pi 3 Model B or B+, or Raspberry Pi 2 Model B</li>
+                                                        <li>4GB (minimum size) SD Card</li>
+                                                        <li>Ensure an external USB to Ethernet adapter (like the SIIG JU-NE0211-S1 USB 3.0 to Gigabit Ethernet or Apple USB 2.0 to Ethernet) is plugged in an recognized (run <tt>ifconfig -a</tt> and ensure you see a <tt>eth1</tt>).</li>
+                                                    </ul>
+
+                                                    <li>Software</li>
+                                                    <ul>
+                                                        <li>Raspbian Lite Latest Image: <a href="https://downloads.raspberrypi.org/raspbian_lite_latest">https://downloads.raspberrypi.org/raspbian_lite_latest</a></li>
+                                                    </ul>
+                                                </ul>
+                                                <br>
+
+                                                                       <li>Install OS</li>
+                                                <ol>
+                                                    <li>Install Raspbian Lite Latest onto a SD Card using the instructions under the "WRITING AN IMAGE TO THE SD CARD" section from <a href="https://www.raspberrypi.org/documentation/installation/installing-images/">here</a>.</li>
+                                                    <li>Turn on the Raspberry Pi with the SD Card installed.</li>
+                                                    <li>Log in to the <tt>pi</tt> account using the password you generated in <a href="#step0">Step 0</a>.</li>
+                                                </ol>
+                                                <br>
+
+                                                <li>Configure OS</li>
+                                                <ol>
+                                                    <li><tt>sudo raspi-config</tt></li>
+                                                    <li>Select <b>2 Change User Password</b> and press the <b>Enter</b> key.
+                                                    <ol>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_change_user_password_1.png" width="797" height="553">
+                                                        <li>Press the <b>Enter</b> key when you receive a message stating <b>You will now be asked to enter a password for the pi user</b></li>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_change_user_password_2.png" width="797" height="553">
+                                                        <li>A new command line prompt stating <b>Enter new UNIX password:</b> will appear on the bottom of the screen. Type in your new password and press the <b>Enter</b> key.</li>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_change_user_password_3.jpg" width="797" height="553">
+                                                        <li>A new command line prompt stating <b>Retype new UNIX password:</b> will appear on the bottom of the screen. Type in your new password again and press the <b>Enter</b> key.</li>
+                                                        <li>A new prompt stating <b>Password changed successfully</b> will appear. Press the <b>Enter</b> key to continue.</li>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_change_user_password_4.png" width="797" height="553">
+                                                    </ol>
+                                                    <li>Select <b>5 Internationalisation Options</b> and press the <b>Enter</b> key.</li>
+                                                    <img class="img-responsive" src="./files/images/client_install/raspi-config_timezone_1.png" width="797" height="553">
+                                                    <ol>
+                                                        <li>Select <b>I2 Change Timezone</b> and press the <b>Enter</b> key.</li>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_timezone_2.png" width="797" height="553">
+                                                        <li>Select <b>America</b> (or the Country you reside in) and press the <b>Enter</b> key.</li>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_timezone_3.png" width="797" height="553">
+                                                        <li>Select <b>New_York</b> (or the location you reside in) and press the <b>Enter</b> key.</li>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_timezone_4.png" width="797" height="553">
+                                                    </ol>
+                                                    <li>Select <b>5 Internationalisation Options</b> and press the <b>Enter</b> key.</li>
+                                                    <img class="img-responsive" src="./files/images/client_install/raspi-config_keyboard_1.png" width="797" height="553">
+                                                    <ol>
+                                                        <li>Select <b>I3 Change Keyboard Layout</b> and press the <b>Enter</b> key.</li>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_keyboard_2.png" width="797" height="553">
+                                                        <li>Select <b>Generic 105-key (Intl) PC</b> and press the <b>Enter</b> key.</li>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_keyboard_3.jpg" width="797" height="553">
+                                                        <li>Select <b>Other</b> and press the <b>Enter</b> key.</li>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_keyboard_4.jpg" width="797" height="553">
+                                                        <li>Select <b>English (US)</b> and press the <b>Enter</b> key.</li>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_keyboard_5.jpg" width="797" height="553">
+                                                        <li>Select <b>English (US)</b> and press the <b>Enter</b> key.</li>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_keyboard_6.jpg" width="797" height="553">
+                                                        <li>Select <b>Right Alt (AltGr)</b> and press the <b>Enter</b> key.</li>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_keyboard_7.jpg" width="797" height="553">
+                                                        <li>Select <b>No compose key</b> and press the <b>Enter</b> key.</li>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_keyboard_8.jpg" width="797" height="553">
+                                                    </ol>
+                                                    <li>Select <b>5 Internationalisation Options</b> and press the <b>Enter</b> key.</li>
+                                                    <img class="img-responsive" src="./files/images/client_install/raspi-config_wifi_1.png" width="797" height="553">
+                                                    <ol>
+                                                        <li>Select <b>I4 Change Wi-fi Country</b> and press the <b>Enter</b> key.</li>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_wifi_2.png" width="797" height="553">
+                                                        <li>Select <b>US United States</b> (or the Country you reside in) and press the <b>Enter</b> key.</li>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_wifi_3.png" width="797" height="553">
+                                                        <li>A new prompt stating <b>Wi-fi country set to US</b> will appear. Press the <b>Enter</b> key to continue.</li>
+                                                        <img class="img-responsive" src="./files/images/client_install/raspi-config_wifi_4.png" width="797" height="553">
+                                                    </ol>
+                                                    <li>Press the <b>Tab</b> key 2 times to select <b>&lt;Finish&gt;</b> and press the <b>Enter</b> key.</li>
+                                                    <img class="img-responsive" src="./files/images/client_install/raspi-config_finish.png" width="797" height="553">
+                                                    <li>A new prompt stating <b>Would you like to reboot now?</b> will appear. Press the <b>Enter</b> key to continue.</li>
+                                                    <img class="img-responsive" src="./files/images/client_install/raspi-config_reboot.png" width="797" height="553">
+                                                    <li>After reboot, on log in prompt, log in.</li>
+                                                </ol>
+                                                <br>
+
+                                                <li>Configure Networking</li>
+                                                <ol>
+                                                    <li><tt>sudo vi /etc/network/interfaces</tt></li>
+                                                    <pre># interfaces(5) file used by ifup(8) and ifdown(8)
+
+# Please note that this file is written to be used with dhcpcd
+# For static IP, consult /etc/dhcpcd.conf and 'man dhcpcd.conf'
+
+# Include files from /etc/network/interfaces.d:
+source-directory /etc/network/interfaces.d
+
+auto lo
+iface lo inet loopback
+
+auto eth0
+allow-hotplug eth0
+iface eth0 inet dhcp
+
+auto eth1
+allow-hotplug eth1
+iface eth1 inet static
+address 192.168.166.1
+netmask 255.255.255.0
+
+allow-hotplug wlan0
+iface wlan0 inet manual
+    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf</pre>
+                                                <br>
+                                                <li><tt>sudo service networking restart</tt></li>
+                                                <br> Wait 30 seconds for <tt>eth0</tt> to obtain an IP Address.
+                                                </ol>
+                                                <br>
+
+                                                Note: you now have the option to SSH into the goSecure client through <tt>eth1</tt> (the USB to Ethernet adapter). Copying and pasting the commands and configuration files is recommended. Be sure to change variables where specified.
+
+                                                <br><br>
+
+                                                <li>Update OS and Raspberry Pi</li>
+                                                    Note: These commands will run for a long time.
+                                                    <br><br>
+                                                <ol>
+                                                    <li><tt>sudo apt-get update</tt></li>
+                                                    <li><tt>sudo apt-get upgrade -y</tt></li>
+                                                    <li><tt>sudo apt-get dist-upgrade -y</tt></li>
+                                                    <li><tt>sudo apt-get install rpi-update</tt></li>
+                                                    <li><tt>sudo rpi-update</tt></li>
+                                                    <li><tt>sudo reboot</tt></li>
+                                                    <li>After reboot, on log in prompt, log in.</li>
+                                                </ol>
+                                                <br>
+
+                                                <li>Run the goSecure Server Install Script</li>
+                                                <ol>
+                                                    <li><tt>cd ~</tt></li>
+                                                    <li><tt>wget https://davedittrich.github.io/goSecure/files/install_scripts/gosecure_server_install_pi.py</tt></li>
+                                                    Note: replace the 2 arguments in the command below with your values. (i.e. <tt>sudo python gosecure_server_install_pi.py client1@d2.local "mysupersecretpsk"</tt>)
+                                                    <li><tt>sudo python gosecure_server_install_pi.py &lt;client_id (i.e. client1@d2.local)&gt; &lt;client_psk (i.e. "atleast16characterswithinquotes")&gt;</tt></li>
+                                                </ol>
+
+                                                <br>
+
+                                                <li>Clean up</li>
+                                                <ol>
+                                                    <li><tt>sudo rm /home/pi/gosecure_server_install_pi.py</tt></li>
+                                                    <br>
+                                                    <li>Unplug the HDMI cable and SSH into the goSecure Server</li>
+                                                    <li><tt>sudo reboot</tt></li>
+                                                    <li>SSH into the goSecure Server</li>
+                                                    <li><tt>sudo systemctl disable ssh</tt></li>
+                                                    <li><tt>sudo /sbin/shutdown -h now</tt></li>
                                                 </ol>
                                             </ol>
                                         </div>
@@ -588,7 +758,99 @@ iface wlan0 inet manual
                                                 <ul>
                                                     <li>Hardware</li>
                                                     <ul>
-                                                        <li>Raspberry Pi 3 Model B or Raspberry Pi 2 Model B (and a USB Wifi adapter like the Edimax EW-7811Un)</li>
+                                                        <li>Raspberry Pi 3 Model B or B+ or Raspberry Pi 2 Model B (and a USB Wifi adapter like the Edimax EW-7811Un)</li>
+                                                        <li>8GB (minimum size) SD Card</li>
+                                                        <li>Ensure nothing is plugged into the ethernet port.</li>
+                                                    </ul>
+
+                                                    <li>Software</li>
+                                                    <ul>
+                                                        <li>HypriotOS (run <tt>make hypriot-img</tt> to download and validate an OS image for later steps)
+                                                    </ul>
+                                                </ul>
+                                                <br>
+
+                                                <li>Install OS</li>
+                                                <ol>
+                                                    <li>Insert an SD card and make sure you know its associated device name.
+                                                    <li>Run <tt>make client-sd</tt>.
+                                                    <li>Turn on the Raspberry Pi with the SD Card installed.</li>
+                                                    <li>Log in to the <tt>pi</tt> account using the password you generated in <a href="#step0">Step 0</a>.</li>
+                                                </ol>
+                                                <br>
+
+                                                Wait 30 seconds for the Wifi to obtain an IP Address.
+
+                                                <br>
+
+                                                Note: you now have the option to SSH into the goSecure client through <tt>eth0</tt> or <tt>wlan0</tt> if your computer is on the same Wifi network.
+
+                                                <br><br>
+
+                                                <li>Update OS and Raspberry Pi</li>
+                                                    Note: These commands will run for a long time.
+                                                    <br><br>
+                                                <ol>
+                                                    <li><tt>sudo apt-get update</tt></li>
+                                                    <li><tt>sudo apt-get upgrade -y</tt></li>
+                                                    <li><tt>sudo apt-get install rpi-update</tt></li>
+                                                    <li><tt>sudo rpi-update</tt></li>
+                                                    <li><tt>sudo reboot</tt></li>
+                                                    <li>After reboot, on log in prompt, log in.</li>
+                                                </ol>
+                                                <br>
+
+                                                <li>Run the goSecure Client Install Script</li>
+                                                <ol>
+                                                    <li><tt>cd ~</tt></li>
+                                                    <li><tt>wget https://davedittrich.github.io/goSecure/files/install_scripts/gosecure_client_install.py</tt></li>
+                                                    <li><tt>sudo python gosecure_client_install.py</tt></li>
+                                                </ol>
+
+                                                <br>
+
+                                                <li>Clean up</li>
+                                                <ol>
+                                                    <li><tt>sudo rm /home/pi/gosecure_client_install.py</tt></li>
+                                                    <li><tt>sudo rm -rf /usr/share/doc/* /opt/vc/src/hello_pi/</tt></li>
+                                                    <li><tt>sudo find /usr/share/locale/* -maxdepth 0 -type d |grep -v en |xargs sudo rm -rf</tt></li>
+                                                    <li><tt>sudo find /usr/share/man/* -maxdepth 0 -type d |grep -Pv 'man\d' |xargs sudo rm -rf</tt></li>
+                                                    <li><tt>sudo find / -type f -name "*-old" |xargs sudo rm -rf</tt></li>
+                                                    <li><tt>sudo rm -rf /var/backups/* /var/lib/apt/lists/* ~/.bash_history</tt></li>
+                                                    <li><tt>sudo find /var/log/ -type f |xargs sudo rm -rf</tt></li>
+                                                    <li><tt>sudo cp /dev/null /etc/resolv.conf</tt></li>
+                                                    <br>
+                                                    <li>Unplug the HDMI cable and SSH into the goSecure Client</li>
+                                                    <li><tt>sudo reboot</tt></li>
+                                                    <li>SSH into the goSecure Client</li>
+                                                    <li><tt>sudo systemctl disable ssh</tt></li>
+                                                    <li><tt>sudo /sbin/shutdown -h now</tt></li>
+                                                </ol>
+                                                <br>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel box box-primary">
+                                    <div class="box-header with-border">
+                                        <h4 class="box-title">
+                                          <a data-toggle="collapse" data-parent="#client-accordion" href="#client-collapseTwo" aria-expanded="false" class="collapsed">
+                                            Raspberry Pi (DEPRECATED)
+                                          </a>
+                                        </h4>
+                                    </div>
+                                    <div id="client-collapseTwo" class="panel-collapse collapse" aria-expanded="false">
+                                        <div class="box-body">
+                                            Note: The following instructions are to build the client in mode 1 (see introduction section for mode definitions).
+                                            <br>
+                                            <br>
+
+                                            <ol type="1">
+                                                <li>Prerequisites</li>
+                                                <ul>
+                                                    <li>Hardware</li>
+                                                    <ul>
+                                                        <li>Raspberry Pi 3 Model B or B+, or Raspberry Pi 2 Model B (and a USB Wifi adapter like the Edimax EW-7811Un)</li>
                                                         <li>4GB (minimum size) SD Card</li>
                                                         <li>Ensure nothing is plugged into the ethernet port.</li>
                                                     </ul>
@@ -751,7 +1013,7 @@ network={
                                                     <li><tt>sudo reboot</tt></li>
                                                     <li>SSH into the goSecure Client</li>
                                                     <li><tt>sudo systemctl disable ssh</tt></li>
-                                                    <li><tt>sudo init 0</tt></li>
+                                                    <li><tt>sudo /sbin/shutdown -h now</tt></li>
                                                 </ol>
                                                 <br>
                                             </ol>
