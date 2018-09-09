@@ -26,7 +26,8 @@ def update_python3():
          "tar -xzf /usr/src/Python-3.6.5.tgz; " +
          "cd Python-3.6.5; " +
          "./configure; " +
-         "make altinstall'", shell=True)
+         "make altinstall;" +
+         "/usr/local/bin/python3.6 -m pip install -U pip'", shell=True)
     call("test \"$(python3.6 -V)\" == \"Python 3.6.5\"", shell=True)
 
 
