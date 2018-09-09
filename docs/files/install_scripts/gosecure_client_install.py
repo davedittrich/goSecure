@@ -334,6 +334,7 @@ def main():
         print('Syntax is: sudo python3 gosecure_client_install.py\nExample: sudo python3 gosecure_client_install.py\n')
         exit()
 
+    call("sh -c 'date +%s > /home/pi/.install-started'", shell=True)
     update_os()
     update_python3()
     enable_ip_forward()
@@ -344,6 +345,7 @@ def main():
     setup_user_interface()
     configure_strongswan()
     start_strongswan()
+    call("sh -c 'date +%s > /home/pi/.install-finished'", shell=True)
 
     call("echo 'Rebooting now... please wait 30-60 seconds and navigate to https://setup.gosecure'", shell=True)
     time.sleep(10)
