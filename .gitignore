@@ -1,2 +1,7 @@
 cloud-config.client
 cloud-config.server
+*raspbian*.img
+*raspbian*.zip
+hypriotos-rpi-*.img
+hypriotos-rpi-*.zip
+hypriotos-rpi-*.sha256
