@@ -59,6 +59,18 @@ write_files:
          psk="{{ gosecure_client_psk }}"
       }
     path: /etc/wpa_supplicant/wpa_supplicant.conf
+  - content: |
+      # KEYBOARD CONFIGURATION FILE
+
+      # Consult the keyboard(5) manual page.
+
+      XKBMODEL="{{ gosecure_pi_keyboard_model }}"
+      XKBLAYOUT="{{ gosecure_pi_keyboard_layout }}"
+      XKBVARIANT=""
+      XKBOPTIONS=""
+
+      BACKSPACE="guess"
+    path: /etc/default/keyboard
 # - content: |
 #     hostname
 #     clientid
