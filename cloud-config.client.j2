@@ -136,12 +136,13 @@ packages:
 
 # These commands will be only be run once on first boot
 runcmd:
-  - 'rpi-update'
   - 'systemctl enable rng-tools'
   - 'service networking restart'
   - 'ifdown eth0'
   - 'ifup eth0'
   - 'systemctl restart avahi-daemon'
+  - 'sleep 20'
+  - 'rpi-update'
   - 'sudo -u pi wget -P /home/pi https://davedittrich.github.io/goSecure/files/install_scripts/gosecure_client_install.py'
   - 'systemctl status dnsmasq'
   - 'ifconfig eth0'
