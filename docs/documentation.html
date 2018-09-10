@@ -863,38 +863,25 @@ iface wlan0 inet manual
                                                     <li>Ensure the <a href="#downloadHypriot">Hypriot OS image is ready</a>.
                                                     <li>Run <a href="#flashHypriot"><tt>make client-sd</tt></a>.
                                                     <li>Turn on the Raspberry Pi with the SD Card installed.</li>
-                                                    <li>Log in to the <tt>pi</tt> account using the password you generated in <a href="#step0">Step 0</a>.</li>
                                                 </ol>
                                                 <br>
 
-                                                Wait 30 seconds for the Wifi to obtain an IP Address.
+                                                When the Raspberry Pi first boots, it will execute the commands defined in the <a href="https://github.com/davedittrich/goSecure/blob/master/cloud-config.client.j2"><tt>cloud-config.client.j2</tt></a> These initial steps including firmware updating and downloading of the <tt>gosecure_client_install.py</tt> script. Be patient. Depending on your network speed, this can take a long time.
+                                                <br><br>
 
-                                                <br>
-
-                                                Note: you now have the option to SSH into the goSecure client through <tt>eth0</tt> or <tt>wlan0</tt> if your computer is on the same Wifi network.
+                                                Note: after a few moments, you have the option to SSH into the goSecure client through <tt>eth0</tt> (192.168.50.1), or <tt>wlan0</tt> if your computer is on the same Wifi network. Verify the SSH host key using the information output by the <tt>cloud-init</tt> process.
 
                                                 <br><br>
 
-                                                <li>Update OS and Raspberry Pi</li>
-                                                    Note: These commands will run for a long time.
-                                                    <br><br>
-                                                <ol>
-                                                    <li><tt>sudo apt-get update</tt></li>
-                                                    <li><tt>sudo apt-get upgrade -y</tt></li>
-                                                    <li><tt>sudo apt-get install rpi-update</tt></li>
-                                                    <li><tt>sudo rpi-update</tt></li>
-                                                    <li><tt>sudo reboot</tt></li>
-                                                    <li>After reboot, on log in prompt, log in.</li>
-                                                </ol>
-                                                <br>
-
                                                 <li>Run the goSecure Client Install Script</li>
-                                                    Note: These commands will run for a long time.
+
+                                                    Log in to the <tt>pi</tt> account using the password you generated in <a href="#step0">Step 0</a>.
                                                     <br><br>
+
                                                 <ol>
-                                                    <li><tt>cd ~</tt></li>
-                                                    <li><tt>wget https://davedittrich.github.io/goSecure/files/install_scripts/gosecure_client_install.py</tt></li>
-                                                    <li><tt>sudo python gosecure_client_install.py</tt></li>
+                                                    <li>If the <tt>gosecure_client_install.py</tt> script is not present, you can download it using the command: <br>
+                                                        <tt>wget https://davedittrich.github.io/goSecure/files/install_scripts/gosecure_client_install.py</tt></li>
+                                                    <li>Run the script with: <tt>sudo python gosecure_client_install.py</tt></li> (Again, this will take a very long time to complete.)
                                                 </ol>
 
                                                 <br>
