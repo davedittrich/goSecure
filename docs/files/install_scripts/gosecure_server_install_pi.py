@@ -90,7 +90,7 @@ def install_strongswan():
         sudo apt-get install -y libssl-dev libpam-dev
         wget -P /tmp https://download.strongswan.org/strongswan-5.5.0.tar.gz
         tar -xvzf /tmp/strongswan-5.5.0.tar.gz -C /tmp
-        cd /tmp/strongswan-5.5.0/ && ./configure --prefix=/usr --sysconfdir=/etc --enable-gcm --with-random-device=/dev/hwrng --enable-kernel-libipsec --enable-openssl --with-fips-mode=2 --disable-vici --disable-des --disable-ikev2 --disable-gmp
+        cd /tmp/strongswan-5.5.0/ && ./configure --prefix=/usr --sysconfdir=/etc --enable-gcm --with-random-device=/dev/hwrng --enable-kernel-libipsec --enable-openssl --with-fips-mode=2 --disable-vici --disable-des --disable-ikev2 --disable-gmp --enable-systemd --enable-swanctl
         make -C /tmp/strongswan-5.5.0/
         sudo make -C /tmp/strongswan-5.5.0/ install""")
 
