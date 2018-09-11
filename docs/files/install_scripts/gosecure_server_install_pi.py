@@ -219,6 +219,7 @@ def main():
         client_id = str(sys.argv[1])
         client_psk = str(sys.argv[2])
 
+    call("sh -c 'date +%s > /home/pi/.install-started'", shell=True)
     update_os()
     enable_ip_forward()
     configure_firewall()
@@ -226,6 +227,11 @@ def main():
     install_strongswan()
     configure_strongswan(client_id, client_psk)
     start_strongswan()
+    call("sh -c 'date +%s > /home/pi/.install-finished'", shell=True)
+
+    call("echo 'Rebooting now... please wait 30-60 seconds and navigate to https://setup.gosecure'", shell=True)
+    time.sleep(10)
+    call("sudo shutdown -r now", shell=True)
 
 if __name__ == "__main__":
     main()
