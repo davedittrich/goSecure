@@ -319,7 +319,8 @@ To set undefined string secrets, run "psec secrets set --undefined"</pre>
                     deployment. This is done using the <a href="http://jinja.pocoo.org/">Jinja</a> template engine.
                     Raspberry Pi deployments use the <a href="https://blog.hypriot.com/downloads/">HypriotOS</a>
                     Raspbian derivative that includes <a href="https://cloud-init.io/"><tt>cloud-init</tt></a> for
-                    boot-time customization. Generate the templates to be used for the client and sever:</p>
+                    boot-time customization using <a href="https://cloudinit.readthedocs.io/en/latest/topics/examples.html">
+                        <tt>cloud-config</tt></a> files. Generate the templates to be used for the client and sever:</p>
 
 
                 <pre>$ make cloud-configs
