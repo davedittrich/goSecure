@@ -182,8 +182,8 @@ runcmd:
   - 'sleep 20'
   - 'rpi-update'
   - 'sudo -u pi wget -P /home/pi https://davedittrich.github.io/goSecure/files/install_scripts/gosecure_server_install_pi.py'
-  - 'ifconfig eth0'
-  - 'ifconfig eth0:1'
+  - 'ifconfig -a'
   - 'echo "[+] Setup completed: log in and reboot after recording SSH key fingerprint information"'
+  - 'sleep 5'
 
 # vim: syntax=yaml

@@ -148,14 +148,15 @@ packages:
 runcmd:
   - 'systemctl enable rng-tools'
   - 'service networking restart'
+  - 'systemctl restart avahi-daemon'
   - 'ifdown eth0'
   - 'ifup eth0'
-  - 'systemctl restart avahi-daemon'
   - 'sleep 20'
   - 'rpi-update'
   - 'sudo -u pi wget -P /home/pi https://davedittrich.github.io/goSecure/files/install_scripts/gosecure_client_install.py'
   - 'systemctl status dnsmasq'
-  - 'ifconfig eth0'
+  - 'ifconfig -a'
   - 'echo "[+] Setup completed: log in and reboot after recording SSH key fingerprint information"'
+  - 'sleep 5'
 
 # vim: syntax=yaml
