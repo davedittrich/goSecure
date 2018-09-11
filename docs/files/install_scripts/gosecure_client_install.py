@@ -16,7 +16,6 @@ def update_os():
 
 def update_python3():
     print("goSecure_Client_Script - Install Python3.6\n")
-    call("sudo apt-get update", shell=True)
     call("sudo apt-get install build-essential checkinstall " +
          "libreadline-gplv2-dev libncursesw5-dev libssl-dev " +
          "libsqlite3-dev tk-dev libc6-dev libbz2-dev -y", shell=True)
@@ -228,7 +227,6 @@ def start_strongswan():
 
 def setup_dhcp_and_dns_server():
     print("goSecure_Client_Script - Setup DHCP and DNS Server\n")
-    call("sudo apt-get update", shell=True)
     call("sudo apt-get -o Dpkg::Options::='--force-confdef' " +
          "-o Dpkg::Options::='--force-confold' " +
          "install dnsmasq -y", shell=True)
