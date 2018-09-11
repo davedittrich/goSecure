@@ -622,19 +622,10 @@ psec template cloud-config.server.j2 /Users/dittrich/.secrets/goSecure/tmp/cloud
                                                 </p>
 
                                                 <ol>
-                                                    <li><tt>cd ~</tt></li>
                                                     <li>
                                                         <tt>wget https://davedittrich.github.io/goSecure/files/install_scripts/gosecure_server_install_pi.py</tt>
                                                     </li>
-                                                    <p class="lead">
-                                                       Note: replace the 2 arguments in the command below with your values.
-                                                        (i.e. <tt>sudo python gosecure_server_install_pi.py client1@d2.local
-                                                        "mysupersecretpsk"</tt>)
-                                                    </p>
-                                                    <li><tt>sudo python gosecure_server_install_pi.py &lt;client_id (i.e.
-                                                        client1@d2.local)&gt; &lt;client_psk (i.e.
-                                                        "atleast16characterswithinquotes")&gt;</tt>
-                                                    </li>
+                                                    <li><tt>sudo python gosecure_server_install_pi.py</tt></li>
                                                 </ol>
                                             </li>
 
