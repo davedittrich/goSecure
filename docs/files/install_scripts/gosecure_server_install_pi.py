@@ -11,13 +11,14 @@ def update_os():
     call("sudo apt-get update", shell=True)
     call("sudo apt-get upgrade -y", shell=True)
     call("sudo apt-get install tree dnsutils byobu gpm unzip -y", shell=True)
+    call("sudo apt-get install build-essential checkinstall " +
+         "libreadline-gplv2-dev libncursesw5-dev libssl-dev " +
+         "libsqlite3-dev tk-dev libc6-dev libbz2-dev " +
+         "libsystemd-dev -y", shell=True)
 
 
 def update_python3():
     print("goSecure_Server_Script - Install Python3.6\n")
-    call("sudo apt-get install build-essential checkinstall " +
-         "libreadline-gplv2-dev libncursesw5-dev libssl-dev " +
-         "libsqlite3-dev tk-dev libc6-dev libbz2-dev -y", shell=True)
     call("sudo wget https://www.python.org/ftp/python/3.6.5/" +
          "Python-3.6.5.tgz -O /usr/src/Python-3.6.5.tgz", shell=True)
     call("sudo sh -c 'cd /usr/src; "  +
@@ -104,14 +105,14 @@ def enable_hardware_random():
 
 
 def install_strongswan():
-    print("goSecure_Client_Script - Install strongSwan\n")
+    print("goSecure_Server_Script - Install strongSwan\n")
     install_strongswan_commands = textwrap.dedent("""\
         sudo apt-get install -y libssl-dev libpam-dev
         wget -P /tmp https://download.strongswan.org/strongswan-5.5.0.tar.gz
-        tar -xvzf /tmp/strongswan-5.5.0.tar.gz -C /tmp
+        tar -xzf /tmp/strongswan-5.5.0.tar.gz -C /tmp
         cd /tmp/strongswan-5.5.0/ && ./configure --prefix=/usr --sysconfdir=/etc --enable-gcm --with-random-device=/dev/hwrng --enable-kernel-libipsec --enable-openssl --with-fips-mode=2 --disable-vici --disable-des --disable-ikev2 --disable-gmp --enable-systemd --enable-swanctl
         make -C /tmp/strongswan-5.5.0/
-        sudo make -C /tmp/strongswan-5.5.0/ install""")
+        sudo sh -c 'make -C /tmp/strongswan-5.5.0/ install'""")
 
     for command in install_strongswan_commands.splitlines():
         call(command, shell=True)
