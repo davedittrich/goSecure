@@ -8,7 +8,7 @@ from subprocess import call, check_output
 
 def update_os():
     print("goSecure_Server_Script - Update OS\n")
-    call("sudo apt-get update -y", shell=True)
+    call("sudo apt-get update", shell=True)
     call("sudo apt-get upgrade -y", shell=True)
 
 def enable_ip_forward():
