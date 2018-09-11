@@ -10,6 +10,25 @@ def update_os():
     print("goSecure_Server_Script - Update OS\n")
     call("sudo apt-get update", shell=True)
     call("sudo apt-get upgrade -y", shell=True)
+    call("sudo apt-get install tree dnsutils byobu gpm unzip -y", shell=True)
+
+
+def update_python3():
+    print("goSecure_Server_Script - Install Python3.6\n")
+    call("sudo apt-get install build-essential checkinstall " +
+         "libreadline-gplv2-dev libncursesw5-dev libssl-dev " +
+         "libsqlite3-dev tk-dev libc6-dev libbz2-dev -y", shell=True)
+    call("sudo wget https://www.python.org/ftp/python/3.6.5/" +
+         "Python-3.6.5.tgz -O /usr/src/Python-3.6.5.tgz", shell=True)
+    call("sudo sh -c 'cd /usr/src; "  +
+         "tar -xzf /usr/src/Python-3.6.5.tgz; " +
+         "cd Python-3.6.5; " +
+         "./configure; " +
+         "make altinstall;" +
+         "/usr/local/bin/python3.6 -m pip install -U pip'", shell=True)
+    # TODO(dittrich): Not working...no time to fix
+    #call("test \"$(python3.6 -V)\" == \"Python 3.6.5\"", shell=True)
+
 
 def enable_ip_forward():
     print("goSecure_Server_Script - Enable IP Forwarding\n")
@@ -26,7 +45,7 @@ def enable_ip_forward():
         for line in lines:
             fout.write(line)
 
-    call(["sudo", "sysctl", "-p"])
+    call("sudo sysctl -p", shell=True)
 
 
 def configure_firewall():
@@ -80,8 +99,8 @@ def configure_firewall():
 
 def enable_hardware_random():
     print("goSecure_Server_Script - Enable Hardware Random\n")
-    call("sudo apt-get install rng-tools -y")
-    call("sudo systemctl enable rng-tools")
+    call("sudo apt-get install rng-tools -y", shell=True)
+    call("sudo systemctl enable rng-tools", shell=True)
 
 
 def install_strongswan():
@@ -98,9 +117,10 @@ def install_strongswan():
         call(command, shell=True)
 
 
-def configure_strongswan(client_id, client_psk):
+def configure_strongswan(client_id=None, client_psk=None):
     print("goSecure_Server_Script - Configure strongSwan\n")
 
+    # TODO(dittrich): Fix this
     # https://www.blackhole-networks.com/IKE_Modes/ikev1-aggressive-weakness.html
     strongswan_conf = textwrap.dedent("""\
         charon {
@@ -114,50 +134,48 @@ def configure_strongswan(client_id, client_psk):
 
         include strongswan.d/*.conf""")
 
-    strongswan_conf_file = open("/etc/strongswan.conf", "w")
-    strongswan_conf_file.write(strongswan_conf)
-    strongswan_conf_file.close()
+    with open("/etc/strongswan.conf", "w") as f:
+        f.write(strongswan_conf)
 
-    ipsec_conf = textwrap.dedent("""\
-        config setup
+    # DEPRECATED: Moving this to cloud-config.server.j2 file
+    if not (client_id is None and client_psk is None):
+        ipsec_conf = textwrap.dedent("""\
+            config setup
 
-        conn %default
-                ikelifetime=60m
-                keylife=20m
-                rekeymargin=3m
-                keyingtries=1
-                keyexchange=ikev1
-                left=%defaultroute
-                leftsubnet=0.0.0.0/0
-                leftid=@gosecure
-                leftfirewall=yes
-                right=%any
-                rightsourceip=172.16.176.100/27
-                auto=add
-                authby=secret
-                ike=aes256-sha384-ecp384!
-                esp=aes256gcm128!
-                aggressive=yes
-
-
-        conn rw-client1
-                rightid={0}
-
-        # To add additional clients:
-        # conn rw-client2 # increment the last number by 1 for each additional client
-        #        rightid=<unique_id_of_client> # set a unique id for each client""".format(client_id))
-
-    ipsec_conf_file = open("/etc/ipsec.conf", "w")
-    ipsec_conf_file.write(ipsec_conf)
-    ipsec_conf_file.close()
+            conn %default
+                    ikelifetime=60m
+                    keylife=20m
+                    rekeymargin=3m
+                    keyingtries=1
+                    keyexchange=ikev1
+                    left=%defaultroute
+                    leftsubnet=0.0.0.0/0
+                    leftid=@gosecure
+                    leftfirewall=yes
+                    right=%any
+                    rightsourceip=172.16.176.100/27
+                    auto=add
+                    authby=secret
+                    ike=aes256-sha384-ecp384!
+                    esp=aes256gcm128!
+                    aggressive=yes
 
 
-    ipsec_secrets = "{0} : PSK {1}".format(client_id, client_psk)
+            conn rw-client1
+                    rightid={0}
 
-    ipsec_secrets_file = open("/etc/ipsec.secrets", "w")
-    ipsec_secrets_file.write(ipsec_secrets)
-    ipsec_secrets_file.close()
+            # To add additional clients:
+            # conn rw-client2 # increment the last number by 1 for each additional client
+            #        rightid=<unique_id_of_client> # set a unique id for each client""".format(client_id))
 
+        with open("/etc/ipsec.conf", "w") as f:
+            f.write(ipsec_conf)
+        ipsec_conf_file.close()
+
+        ipsec_secrets = "{0} : PSK {1}".format(client_id, client_psk)
+
+        with open("/etc/ipsec.secrets", "w") as f:
+            f.write(ipsec_secrets)
 
     with open("/etc/strongswan.d/charon/openssl.conf") as fin:
         lines = fin.readlines()
@@ -170,8 +188,7 @@ def configure_strongswan(client_id, client_psk):
         for line in lines:
             fout.write(line)
 
-
-    call(["sudo", "service", "networking", "restart"])
+    call("sudo service networking restart", shell=True)
     time.sleep(30)
 
 def start_strongswan():
@@ -190,15 +207,17 @@ def start_strongswan():
 
 def main():
     cmdargs = str(sys.argv)
+    client_id = None
+    client_psk = None
 
-    if len(sys.argv) != 3:
-        print(textwrap.dedent("""\
-            Syntax is: sudo python gosecure_server_install_pi.py <server_id> <client1_id> "<client1_psk>"
-            Example: sudo python gosecure_server_install_pi.py vpn.d2.local client1.d2.local "mysupersecretpsk"\n"""))
-        exit()
-
-    client_id = str(sys.argv[1])
-    client_psk = str(sys.argv[2])
+    if len(sys.argv) == 3:
+        # DEPRECATED: Moving this to cloud-config.server.j2 file
+        #print(textwrap.dedent("""\
+        #    Syntax is: sudo python gosecure_server_install_pi.py <client1_id> "<client1_psk>"
+        #    Example: sudo python gosecure_server_install_pi.py client1.d2.local "mysupersecretpsk"\n"""))
+        #exit()
+        client_id = str(sys.argv[1])
+        client_psk = str(sys.argv[2])
 
     update_os()
     enable_ip_forward()
