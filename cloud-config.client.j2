@@ -1,5 +1,7 @@
 #cloud-config
 
+{%- set cloud_config = 'https://github.com/davedittrich/goSecure/blob/master/cloud-config.client.j2' %}
+
 hostname: gosecure-client
 manage_etc_hosts: false
 
@@ -42,20 +44,26 @@ timezone: "{{ gosecure_pi_timezone }}"
 
 write_files:
   - content: |
-     # File created by cloud-init
-     # https://davedittrich.github.io/goSecure
+      # File created by {{ cloud_config }}
 
-     127.0.1.1 gosecure-client.localdomain gosecure-client
-     127.0.0.1 localhost
-     192.168.50.1 setup
+      127.0.1.1 gosecure-client.localdomain gosecure-client
+      127.0.0.1 localhost
+      192.168.50.1 setup client
+      # For development and network reconfiguration via Ansible
+      192.168.50.2 server
 
-     ::1 ipv6-localhost ipv6-loopback
-     fe00::0 ipv6-localnet
-     ff00::0 ipv6-mcastprefix
-     ff02::1 ipv6-allnodes
-     ff02::2 ipv6-allrouters
-     ff02::3 ipv6-allhosts
+      ::1 ipv6-localhost ipv6-loopback
+      fe00::0 ipv6-localnet
+      ff00::0 ipv6-mcastprefix
+      ff02::1 ipv6-allnodes
+      ff02::2 ipv6-allrouters
+      ff02::3 ipv6-allhosts
     path: /etc/hosts
+  - content: |
+      {{ gosecure_vpn_client_id }} : PSK {{ gosecure_vpn_client_psk }}
+    path: /etc/ipsec.secrets
+    owner: root:root
+    permissions: '0600'
   - content: |
       net.ipv6.conf.all.disable_ipv6=1
     path: /etc/sysctl.d/local.conf
@@ -74,6 +82,8 @@ write_files:
          psk="{{ gosecure_client_psk }}"
       }
     path: /etc/wpa_supplicant/wpa_supplicant.conf
+    owner: root:root
+    permissions: '0600'
   - content: |
       # KEYBOARD CONFIGURATION FILE
 

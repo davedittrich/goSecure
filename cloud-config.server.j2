@@ -1,5 +1,7 @@
 #cloud-config
 
+{%- set cloud_config = 'https://github.com/davedittrich/goSecure/blob/master/cloud-config.server.j2' %}
+
 hostname: gosecure-server
 manage_etc_hosts: false
 
@@ -42,19 +44,26 @@ timezone: "{{ gosecure_pi_timezone }}"
 
 write_files:
   - content: |
-     # File created by cloud-init
-     # https://davedittrich.github.io/goSecure
+      # File created by {{ cloud_config }}
 
-     127.0.1.1 gosecure-server.localdomain gosecure-server
-     127.0.0.1 localhost
+      127.0.1.1 gosecure-server.localdomain gosecure-server
+      127.0.0.1 localhost
+      # For development and network reconfiguration via Ansible
+      192.168.50.1 setup client
+      192.168.50.2 server
 
-     ::1 ipv6-localhost ipv6-loopback
-     fe00::0 ipv6-localnet
-     ff00::0 ipv6-mcastprefix
-     ff02::1 ipv6-allnodes
-     ff02::2 ipv6-allrouters
-     ff02::3 ipv6-allhosts
+      ::1 ipv6-localhost ipv6-loopback
+      fe00::0 ipv6-localnet
+      ff00::0 ipv6-mcastprefix
+      ff02::1 ipv6-allnodes
+      ff02::2 ipv6-allrouters
+      ff02::3 ipv6-allhosts
     path: /etc/hosts
+  - content: |
+      {{ gosecure_vpn_client_id }} : PSK {{ gosecure_vpn_client_psk }}
+    path: /etc/ipsec.secrets
+    owner: root:root
+    permissions: '0600'
   - content: |
       net.ipv6.conf.all.disable_ipv6=1
     path: /etc/sysctl.d/local.conf
@@ -73,6 +82,8 @@ write_files:
          psk="{{ gosecure_client_psk }}"
       }
     path: /etc/wpa_supplicant/wpa_supplicant.conf
+    owner: root:root
+    permissions: '0600'
   - content: |
       # KEYBOARD CONFIGURATION FILE
 
@@ -85,6 +96,37 @@ write_files:
 
       BACKSPACE="guess"
     path: /etc/default/keyboard
+  - content: |
+      # File created by {{ cloud_config }}
+      config setup
+
+      conn %default
+              ikelifetime=60m
+              keylife=20m
+              rekeymargin=3m
+              keyingtries=1
+              keyexchange=ikev1
+              left=%defaultroute
+              leftsubnet=0.0.0.0/0
+              leftid=@gosecure
+              leftfirewall=yes
+              right=%any
+              rightsourceip=172.16.176.100/27
+              auto=add
+              authby=secret
+              ike=aes256-sha384-ecp384!
+              esp=aes256gcm128!
+              aggressive=yes
+
+      conn rw-client1
+              rightid={0}
+
+      # To add additional clients:
+      # conn rw-client2 # increment the last number by 1 for each additional client
+      #        rightid=<unique_id_of_client> # set a unique id for each client""".format(client_id))
+    path: /etc/ipsec.conf
+    owner: root:root
+    permissions: '0600'
 # - content: |
 #     hostname
 #     clientid
@@ -113,17 +155,14 @@ write_files:
 #     log-async
 #     log-dhcp
 #   path: /etc/dnsmasq.conf
-# - content: |
-#     auto eth0
-#     allow-hotplug eth0
-#     iface eth0 inet static
-#     address 192.168.50.1
-#     netmask 255.255.255.0
+  - content: |
+      auto eth0:1
+      allow-hotplug eth0:1
+      iface eth0 inet static
+      address 192.168.50.2
+      netmask 255.255.255.0
 
-#     auto eth0:1
-#     allow-hotplug eth0:1
-#     iface eth0:1 inet dhcp
-#   path: /etc/network/interfaces.d/eth0
+    path: /etc/network/interfaces.d/eth0:1
 
 # Install any additional apt packages you need here
 packages:
@@ -131,12 +170,20 @@ packages:
  - curl
  - dnsmasq
  - rng-tools
+ - rpi-update
 
 # These commands will be ran once on first boot only
 runcmd:
   - 'systemctl enable rng-tools'
-  - 'systemctl restart networking'
-  - 'sudo -u pi wget -P /home/pi https://davedittrich.github.io/goSecure/files/install_scripts/gosecure_server_install_pi.py'
+  - 'service networking restart'
   - 'systemctl restart avahi-daemon'
+  - 'ifdown eth0:1'
+  - 'ifup eth0:1'
+  - 'sleep 20'
+  - 'rpi-update'
+  - 'sudo -u pi wget -P /home/pi https://davedittrich.github.io/goSecure/files/install_scripts/gosecure_server_install_pi.py'
+  - 'ifconfig eth0'
+  - 'ifconfig eth0:1'
+  - 'echo "[+] Setup completed: log in and reboot after recording SSH key fingerprint information"'
 
 # vim: syntax=yaml
