@@ -119,11 +119,11 @@ write_files:
               aggressive=yes
 
       conn rw-client1
-              rightid={0}
+              rightid={{ gosecure_vpn_client_id }}
 
       # To add additional clients:
       # conn rw-client2 # increment the last number by 1 for each additional client
-      #        rightid=<unique_id_of_client> # set a unique id for each client""".format(client_id))
+      #        rightid=<unique_id_of_client> # set a unique id for each client
     path: /etc/ipsec.conf
     owner: root:root
     permissions: '0600'
