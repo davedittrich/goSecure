@@ -194,24 +194,28 @@ new string variable "gosecure_pi_timezone" is not defined
 new string variable "gosecure_pi_wifi_country" is not defined
 new string variable "gosecure_pi_keyboard_model" is not defined
 new string variable "gosecure_pi_keyboard_layout" is not defined
+new string variable "gosecure_vpn_client_id" is not defined
+new string variable "gosecure_vpn_client_psk" is not defined
 environment "goSecure" (/Users/dittrich/.secrets/goSecure) created</pre>
 
                 <p>Initially, none of the variables and/or secrets are set.</p>
 
                 <pre>$ psec secrets show --no-redact
-+-----------------------------+----------+-------+
-| Variable                    | Type     | Value |
-+-----------------------------+----------+-------+
-| gosecure_app_password       | password | None  |
-| gosecure_client_psk         | string   | None  |
-| gosecure_client_ssid        | string   | None  |
-| gosecure_pi_password        | password | None  |
-| gosecure_pi_pubkey          | string   | None  |
-| gosecure_pi_timezone        | string   | None  |
-| gosecure_pi_wifi_country    | string   | None  |
-| gosecure_pi_keyboard_model  | string   | None  |
-| gosecure_pi_keyboard_layout | string   | None  |
-+-----------------------------+----------+-------+</pre>
++-----------------------------+-----------+-------+
+| Variable                    | Type      | Value |
++-----------------------------+-----------+-------+
+| gosecure_app_password       | password  | None  |
+| gosecure_client_psk         | string    | None  |
+| gosecure_client_ssid        | string    | None  |
+| gosecure_pi_password        | password  | None  |
+| gosecure_pi_pubkey          | string    | None  |
+| gosecure_pi_timezone        | string    | None  |
+| gosecure_pi_wifi_country    | string    | None  |
+| gosecure_pi_keyboard_model  | string    | None  |
+| gosecure_pi_keyboard_layout | string    | None  |
+| gosecure_vpn_client_id      | string    | None  |
+| gosecure_vpn_client_psk     | token_hex | None  |
++-----------------------------+-----------+-------+</pre>
 
                 <p>Since default passwords are being avoided, generate the
                     secrets that will be needed to configure the client and
@@ -219,19 +223,21 @@ environment "goSecure" (/Users/dittrich/.secrets/goSecure) created</pre>
 
                 <pre>$ psec secrets generate
 $ psec secrets show --no-redact
-+-----------------------------+----------+------------------------------+
-| Variable                    | Type     | Value                        |
-+-----------------------------+----------+------------------------------+
-| gosecure_app_password       | password | brunt outclass alike turbine |
-| gosecure_client_psk         | string   | None                         |
-| gosecure_client_ssid        | string   | None                         |
-| gosecure_pi_password        | password | brunt outclass alike turbine |
-| gosecure_pi_pubkey          | string   | None                         |
-| gosecure_pi_timezone        | string   | None                         |
-| gosecure_pi_wifi_country    | string   | None                         |
-| gosecure_pi_keyboard_model  | string   | None                         |
-| gosecure_pi_keyboard_layout | string   | None                         |
-+-----------------------------+----------+------------------------------+</pre>
++-----------------------------+-----------+----------------------------------+
+| Variable                    | Type      | Value                            |
++-----------------------------+-----------+----------------------------------+
+| gosecure_app_password       | password  | brunt outclass alike turbine     |
+| gosecure_client_psk         | string    | None                             |
+| gosecure_client_ssid        | string    | None                             |
+| gosecure_pi_password        | password  | brunt outclass alike turbine     |
+| gosecure_pi_pubkey          | string    | None                             |
+| gosecure_pi_timezone        | string    | None                             |
+| gosecure_pi_wifi_country    | string    | None                             |
+| gosecure_pi_keyboard_model  | string    | None                             |
+| gosecure_pi_keyboard_layout | string    | None                             |
+| gosecure_vpn_client_id      | string    | None                             |
+| gosecure_vpn_client_psk     | token_hex | dda23bbdfc922622888a7f6e9549f10e |
++-----------------------------+-----------+----------------------------------+</pre>
 
                 <p>Note that the <tt>string</tt> variables were not
                     automatically generated. These are external pieces of
@@ -244,7 +250,8 @@ $ psec secrets show --no-redact
                 <pre>$ psec secrets set gosecure_pi_pubkey=@~/.ssh/new_rsa.pub
 $ psec secrets set gosecure_client_psk="atjhK5AlsQMw3Zh" gosecure_client_ssid="YourWiFiSSID" \
 > gosecure_pi_timezone="America/Los_Angeles" gosecure_pi_wifi_country="US" \
-> gosecure_pi_keyboard_model="pc105" gosecure_pi_keyboard_layout="us"</pre>
+> gosecure_pi_keyboard_model="pc105" gosecure_pi_keyboard_layout="us" \
+> gosecure_vpn_client_id="dave.dittrich@gmail.com"</pre>
 
                 <p>If you prefer to be prompted for each variable, do so this way.</p>
 
@@ -254,6 +261,7 @@ SSID for goSecure client WiFi AP? [None]: YourWiFiSSID
 SSH public key for accessing "pi" account? [None]: @~/.ssh/new_rsa.pub
 Locale (e.g., "en_US.UTF-8")? [None]: en_US.UTF-8
 Timezone (e.g., "America/Los_Angeles")? [None]: America/Los_Angeles
+Default VPN client ID? [None]: dave.dittrich@gmail.com
 WiFi country code (e.g., "US")? [None]: US
 Keyboard model (e.g., "pc105")? [None]: pc105
 Keyboard layout (e.g., "us")? [None]: us</pre>
@@ -261,23 +269,25 @@ Keyboard layout (e.g., "us")? [None]: us</pre>
                 <p>You may see the values this way:</p>
 
                 <pre>$ psec secrets show --no-redact --fit-width
-+-----------------------------+----------+------------------------------------------------------------------------------------------+
-| Variable                    | Type     | Value                                                                                    |
-+-----------------------------+----------+------------------------------------------------------------------------------------------+
-| gosecure_app_password       | password | brunt outclass alike turbine                                                             |
-| gosecure_client_psk         | string   | atjhK5AlsQMw3Zh                                                                          |
-| gosecure_client_ssid        | string   | YourWiFiSSID                                                                             |
-| gosecure_pi_password        | password | brunt outclass alike turbine                                                             |
-| gosecure_pi_pubkey          | string   | ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC+qUIucrPvRkTmY0tgxr9ac/VtBUHhYHfOdDVpU99AcryLMWiU |
-|                             |          | uQ2/NVikfOfPo5mt9YTQyqRbeBzKlNgbHnsxh0AZatjhK5AlsQMw3ZhZUcLYZbt7szuQy8ineN0potlCJoVaMSOb |
-|                             |          | 9htf9gAPvzwxUnHxg35jPCzAXYAi3Erc6y338+CL0XxQvCogXOA+MwH7wZGgdT3WpupLG/7HAr/3KJEQQk1FlS2m |
-|                             |          | Rd+WuewnLbKkqBP21N+48ccq6XhEhAmlzzr9SENw5DMmrvMAYIYkoTwUeD3Qx4YebjFkCxZw+w7AafEFn0Kz6vCX |
-|                             |          | 4mp/6ZF/Ko+o04HM2sVr6wtCu2dB dittrich@localhost                                          |
-| gosecure_pi_timezone        | string   | America/Los_Angeles                                                                      |
-| gosecure_pi_wifi_country    | string   | US                                                                                       |
-| gosecure_pi_keyboard_model  | string   | pc105                                                                                    |
-| gosecure_pi_keyboard_layout | string   | us                                                                                       |
-+--------------------------+----------+------------------------------------------------------------------------------------------+</pre>
++-----------------------------+-----------+------------------------------------------------------------------------------------------+
+| Variable                    | Type      | Value                                                                                    |
++-----------------------------+-----------+------------------------------------------------------------------------------------------+
+| gosecure_app_password       | password  | brunt outclass alike turbine                                                             |
+| gosecure_client_psk         | string    | atjhK5AlsQMw3Zh                                                                          |
+| gosecure_client_ssid        | string    | YourWiFiSSID                                                                             |
+| gosecure_pi_password        | password  | brunt outclass alike turbine                                                             |
+| gosecure_pi_pubkey          | string    | ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC+qUIucrPvRkTmY0tgxr9ac/VtBUHhYHfOdDVpU99AcryLMWiU |
+|                             |           | uQ2/NVikfOfPo5mt9YTQyqRbeBzKlNgbHnsxh0AZatjhK5AlsQMw3ZhZUcLYZbt7szuQy8ineN0potlCJoVaMSOb |
+|                             |           | 9htf9gAPvzwxUnHxg35jPCzAXYAi3Erc6y338+CL0XxQvCogXOA+MwH7wZGgdT3WpupLG/7HAr/3KJEQQk1FlS2m |
+|                             |           | Rd+WuewnLbKkqBP21N+48ccq6XhEhAmlzzr9SENw5DMmrvMAYIYkoTwUeD3Qx4YebjFkCxZw+w7AafEFn0Kz6vCX |
+|                             |           | 4mp/6ZF/Ko+o04HM2sVr6wtCu2dB dittrich@localhost                                          |
+| gosecure_pi_timezone        | string    | America/Los_Angeles                                                                      |
+| gosecure_pi_wifi_country    | string    | US                                                                                       |
+| gosecure_pi_keyboard_model  | string    | pc105                                                                                    |
+| gosecure_pi_keyboard_layout | string    | us                                                                                       |
+| gosecure_vpn_client_id      | string    | dave.dittrich@gmail.com                                                                  |
+| gosecure_vpn_client_psk     | token_hex | dda23bbdfc922622888a7f6e9549f10e                                                         |
++-----------------------------+-----------+------------------------------------------------------------------------------------------+</pre>
                 <p>
                     <em>
                         This last command will remind you of the generated
