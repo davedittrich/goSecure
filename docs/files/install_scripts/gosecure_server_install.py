@@ -154,7 +154,7 @@ def main():
         print(textwrap.dedent("""\
             Syntax is: sudo python gosecure_server_install.py <server_id> <client1_id> "<client1_psk>"
             Example: sudo python gosecure_server_install.py vpn.d2.local client1.d2.local "mysupersecretpsk"\n"""))
-        exit()
+        exit(1)
 
     client_id = str(sys.argv[1])
     client_psk = str(sys.argv[2])
@@ -165,6 +165,8 @@ def main():
     install_strongswan()
     configure_strongswan(client_id, client_psk)
     start_strongswan()
+    print("goSecure_Server_Script - Completed")
+    exit(0)
 
 if __name__ == "__main__":
     main()

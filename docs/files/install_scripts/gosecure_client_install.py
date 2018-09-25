@@ -331,7 +331,7 @@ def main():
     cmdargs = str(sys.argv)
     if len(sys.argv) != 1:
         print('Syntax is: sudo python3 gosecure_client_install.py\nExample: sudo python3 gosecure_client_install.py\n')
-        exit()
+        exit(1)
 
     call("sh -c 'date +%s > /home/pi/.install-started'", shell=True)
     update_os()

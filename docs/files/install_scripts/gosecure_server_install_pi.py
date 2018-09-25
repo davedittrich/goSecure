@@ -216,7 +216,7 @@ def main():
         #print(textwrap.dedent("""\
         #    Syntax is: sudo python gosecure_server_install_pi.py <client1_id> "<client1_psk>"
         #    Example: sudo python gosecure_server_install_pi.py client1.d2.local "mysupersecretpsk"\n"""))
-        #exit()
+        #exit(1)
         client_id = str(sys.argv[1])
         client_psk = str(sys.argv[2])
 
