@@ -152,8 +152,8 @@ def main():
 
     if len(sys.argv) != 3:
         print(textwrap.dedent("""\
-            Syntax is: sudo python gosecure_server_install.py <server_id> <client1_id> "<client1_psk>"
-            Example: sudo python gosecure_server_install.py vpn.d2.local client1.d2.local "mysupersecretpsk"\n"""))
+            Syntax is: sudo python gosecure_server_install.py <client1_id> "<client1_psk>"
+            Example: sudo python gosecure_server_install.py client1.d2.local "mysupersecretpsk"\n"""))
         exit(1)
 
     client_id = str(sys.argv[1])
