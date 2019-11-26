@@ -1,6 +1,6 @@
 SHELL=/bin/bash
 TMP:=$(shell psec environments path --tmpdir)
-HYPRIOT_VERSION=1.9.0
+HYPRIOT_VERSION=1.11.4
 HYPRIOT_IMG=hypriotos-rpi-v$(HYPRIOT_VERSION).img
 HYPRIOT_ZIP=$(HYPRIOT_IMG).zip
 HYPRIOT_ZIP_URL=https://github.com/hypriot/image-builder-rpi/releases/download/v$(HYPRIOT_VERSION)/$(HYPRIOT_ZIP)
@@ -8,7 +8,6 @@ HYPRIOT_SHA256=$(HYPRIOT_ZIP).sha256
 HYPRIOT_SHA256_URL=$(HYPRIOT_ZIP_URL).sha256
 CLOUD_CONFIG_CLIENT:=$(TMP)/cloud-config.client
 CLOUD_CONFIG_SERVER:=$(TMP)/cloud-config.server
-
 IMAGE=$(HYPRIOT_IMG)
 
 .PHONY: all
