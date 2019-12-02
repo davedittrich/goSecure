@@ -9,6 +9,7 @@ manage_etc_hosts: false
 
 groups:
   - gosecure: [pi,pirate]
+  - nginx: [pi,pirate]
 users:
   - name: pi
     gecos: "goSecure pi"
@@ -170,11 +171,14 @@ write_files:
 packages:
  - ntp
  - curl
+ - unzip
+ - rsync
+ - nginx
  - dnsmasq
  - rng-tools
  - rpi-update
 
-# These commands will be ran once on first boot only
+# These commands will be only be run once on first boot
 runcmd:
   - 'systemctl enable rng-tools'
   - 'service networking restart'
