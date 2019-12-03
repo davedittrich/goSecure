@@ -67,6 +67,9 @@ clean:
 	[ ! -f "$(CLOUD_CONFIG_CLIENT)" ] || rm "$(CLOUD_CONFIG_CLIENT)"
 	[ ! -f "$(CLOUD_CONFIG_SERVER)" ] || rm "$(CLOUD_CONFIG_SERVER)"
 	[ ! -f "$(HYPRIOT_IMG)" ] || rm "$(HYPRIOT_IMG)"
+	rm -rf goSecure_init/__pycache__
+	rm -rf scripts/__pycache__
+	rm -rf __pycache__
 
 .PHONY: clean
 spotless: clean
