@@ -15,15 +15,11 @@ def update_os():
     call("sudo apt-get " +
          "-o Dpkg::Options::='--force-confdef' " +
          "-o Dpkg::Options::='--force-confold' " +
-         "install build-essential checkinstall " +
-         "tree ntpdate dnsutils byobu gpm unzip" +
+         "install build-essential python-setuptools checkinstall " +
+         "ansible tree ntpdate dnsutils byobu gpm unzip" +
          "libreadline-gplv2-dev libncursesw5-dev libssl-dev " +
          "libsqlite3-dev tk-dev libc6-dev libbz2-dev " +
          "libsystemd-dev -y", shell=True)
-
-
-def update_python():
-    print("goSecure_Client_Script - Update Python\n")
     call("sudo /usr/bin/python -m pip install -U pip", shell=True)
 
 
@@ -332,7 +328,6 @@ def main():
     call("sh -c 'date +%s > /home/pi/.install-started'", shell=True)
     update_os()
     enable_hardware_random()
-    update_python()
     enable_ip_forward()
     configure_firewall()
     setup_dhcp_and_dns_server()
