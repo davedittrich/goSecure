@@ -26,18 +26,10 @@ def update_os():
 def enable_ip_forward():
     print("goSecure_Client_Script - Enable IP Forwarding\n")
     call("sudo sh -c 'echo 1 > /proc/sys/net/ipv4/ip_forward'", shell=True)
-
-    with open("/etc/sysctl.conf") as fin:
-        lines = fin.readlines()
-
-    for i, line in enumerate(lines):
-        if "net.ipv4.ip_forward" in line:
-            lines[i] = "net.ipv4.ip_forward = 1\n"
-
-    with open("/etc/sysctl.conf", "w") as fout:
-        for line in lines:
-            fout.write(line)
-
+    call("ansible --become -i localhost, --module lineinfile " +
+         "--args \"dest=/etc/sysctl.conf " +
+         "regexp='.*net.ipv4.ip_forward.*' " +
+         "line='net.ipv4.forward = 1' state=present\" localhost", shell=True)
     call("sudo sysctl -p", shell=True)
 
 
