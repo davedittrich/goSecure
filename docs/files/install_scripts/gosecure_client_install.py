@@ -97,11 +97,12 @@ def install_strongswan():
     print("goSecure_Client_Script - Install strongSwan\n")
     install_strongswan_commands = textwrap.dedent("""\
         sudo apt-get install -y libssl-dev libpam-dev
-        wget -P /tmp https://download.strongswan.org/strongswan-5.5.0.tar.gz
-        tar -xzf /tmp/strongswan-5.5.0.tar.gz -C /tmp
-        cd /tmp/strongswan-5.5.0/ && ./configure --prefix=/usr --sysconfdir=/etc --enable-gcm --with-random-device=/dev/hwrng --enable-kernel-libipsec --enable-openssl --with-fips-mode=2 --disable-vici --disable-des --disable-ikev2 --disable-gmp --enable-systemd --enable-swanctl
-        make -C /tmp/strongswan-5.5.0/
-        sudo make -C /tmp/strongswan-5.5.0/ install""")
+        wget -P /tmp https://download.strongswan.org/strongswan-5.8.2.tar.gz
+        md5sum -c <<< "d94eac2caed51b0cc776e5887b10bace Makefile"
+        tar -xzf /tmp/strongswan-5.8.2.tar.gz -C /tmp
+        cd /tmp/strongswan-5.8.2/ && ./configure --prefix=/usr --sysconfdir=/etc --enable-gcm --with-random-device=/dev/hwrng --enable-kernel-libipsec --enable-openssl --with-fips-mode=2 --disable-vici --disable-des --disable-ikev2 --disable-gmp --enable-systemd --enable-swanctl
+        make -C /tmp/strongswan-5.8.2/
+        sudo make -C /tmp/strongswan-5.8.2/ install""")
 
     for command in install_strongswan_commands.splitlines():
         call(command, shell=True)
