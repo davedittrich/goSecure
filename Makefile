@@ -1,6 +1,6 @@
 SHELL=/bin/bash
 TMP:=$(shell psec environments path --tmpdir)
-HYPRIOT_VERSION=1.11.4
+HYPRIOT_VERSION=1.12.0
 HYPRIOT_IMG=hypriotos-rpi-v$(HYPRIOT_VERSION).img
 HYPRIOT_ZIP=$(HYPRIOT_IMG).zip
 HYPRIOT_ZIP_URL=https://github.com/hypriot/image-builder-rpi/releases/download/v$(HYPRIOT_VERSION)/$(HYPRIOT_ZIP)
