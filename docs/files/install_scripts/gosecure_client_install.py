@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import os
 import sys
@@ -22,18 +22,9 @@ def update_os():
          "libsystemd-dev -y", shell=True)
 
 
-def update_python3():
-    print("goSecure_Client_Script - Install Python3.6\n")
-    call("sudo wget https://www.python.org/ftp/python/3.6.5/" +
-         "Python-3.6.5.tgz -O /usr/src/Python-3.6.5.tgz", shell=True)
-    call("sudo sh -c 'cd /usr/src; "  +
-         "tar -xzf /usr/src/Python-3.6.5.tgz; " +
-         "cd Python-3.6.5; " +
-         "./configure; " +
-         "make altinstall;" +
-         "/usr/local/bin/python3.6 -m pip install -U pip'", shell=True)
-    # TODO(dittrich): Not working...no time to fix
-    #call("test \"$(python3.6 -V)\" == \"Python 3.6.5\"", shell=True)
+def update_python():
+    print("goSecure_Client_Script - Update Python\n")
+    call("sudo /usr/bin/python -m pip install -U pip", shell=True)
 
 
 def enable_ip_forward():
@@ -293,7 +284,7 @@ def setup_user_interface():
     print("goSecure_Client_Script - Setup User Interface\n")
     setup_user_interface_commands = textwrap.dedent("""\
         sudo apt-get install libsystemd-dev libxslt1-dev libyaml-dev libxml2-dev -y
-        sudo /usr/local/bin/python3.6 -m pip install RPi.GPIO systemd Flask Flask-WTF Flask-Login mechanicalsoup
+        sudo /usr/bin/python -m pip install RPi.GPIO systemd Flask Flask-WTF Flask-Login mechanicalsoup --user
         wget -P /home/pi https://github.com/davedittrich/goSecure/archive/master.zip
         unzip /home/pi/master.zip
         rm /home/pi/master.zip
@@ -315,7 +306,7 @@ def setup_user_interface():
 
         [Service]
         Type=idle
-        ExecStart=/usr/local/bin/python3.6 /home/pi/goSecure_Web_GUI/gosecure_app.py
+        ExecStart=/usr/bin/python /home/pi/goSecure_Web_GUI/gosecure_app.py
 
         [Install]
         WantedBy=default.target""")
@@ -335,13 +326,13 @@ def setup_user_interface():
 def main():
     cmdargs = str(sys.argv)
     if len(sys.argv) != 1:
-        print('Syntax is: sudo python3 gosecure_client_install.py\nExample: sudo python3 gosecure_client_install.py\n')
+        print('Syntax is: sudo /usr/bin/python gosecure_client_install.py\nExample: sudo python gosecure_client_install.py\n')
         exit(1)
 
     call("sh -c 'date +%s > /home/pi/.install-started'", shell=True)
     update_os()
     enable_hardware_random()
-    update_python3()
+    update_python()
     enable_ip_forward()
     configure_firewall()
     setup_dhcp_and_dns_server()
