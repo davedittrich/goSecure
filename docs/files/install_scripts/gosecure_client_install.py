@@ -30,7 +30,7 @@ def enable_ip_forward():
          "--module-name lineinfile " +
          "--args \"dest=/etc/sysctl.conf " +
          "regexp='.*net.ipv4.ip_forward.*' " +
-         "line='net.ipv4.forward = 1' state=present\" localhost", shell=True)
+         "line='net.ipv4.ip_forward = 1' state=present\" localhost", shell=True)
     call("sudo sysctl -p", shell=True)
 
 
