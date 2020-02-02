@@ -6,13 +6,17 @@ import textwrap
 import time
 from subprocess import call, check_output
 
+os.environ['DEBIAN_FRONTEND'] = 'noninteractive'
 
 def update_os():
     print("goSecure_Client_Script - Update OS\n")
     call("sudo apt-get update", shell=True)
     call("sudo apt-get upgrade -y", shell=True)
-    call("sudo apt-get install tree dnsutils byobu gpm unzip -y", shell=True)
-    call("sudo apt-get install build-essential checkinstall " +
+    call("sudo apt-get " +
+         "-o Dpkg::Options::='--force-confdef' " +
+         "-o Dpkg::Options::='--force-confold' " +
+         "install build-essential checkinstall " +
+         "tree ntpdate dnsutils byobu gpm unzip" +
          "libreadline-gplv2-dev libncursesw5-dev libssl-dev " +
          "libsqlite3-dev tk-dev libc6-dev libbz2-dev " +
          "libsystemd-dev -y", shell=True)
@@ -228,7 +232,8 @@ def start_strongswan():
 
 def setup_dhcp_and_dns_server():
     print("goSecure_Client_Script - Setup DHCP and DNS Server\n")
-    call("sudo apt-get -o Dpkg::Options::='--force-confdef' " +
+    call("sudo apt-get " +
+         "-o Dpkg::Options::='--force-confdef' " +
          "-o Dpkg::Options::='--force-confold' " +
          "install dnsmasq -y", shell=True)
 
