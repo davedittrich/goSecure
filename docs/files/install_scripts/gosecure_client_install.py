@@ -12,11 +12,14 @@ def update_os():
     print("goSecure_Client_Script - Update OS\n")
     call("sudo apt-get update", shell=True)
     call("sudo apt-get upgrade -y", shell=True)
+    call("sudo apt-get install ntpdate -y", shell=True)
+    call("sudo ntpdate pool.ntp.org", shell=True)
+    call("sudo apt-get install build-essential python-setuptools " +
+         "unzip -y", shell=True)
     call("sudo apt-get " +
          "-o Dpkg::Options::='--force-confdef' " +
          "-o Dpkg::Options::='--force-confold' " +
-         "install build-essential python-setuptools checkinstall " +
-         "ansible tree ntpdate dnsutils byobu gpm unzip" +
+         "ansible tree ntpdate dnsutils byobu gpm " +
          "libreadline-gplv2-dev libncursesw5-dev libssl-dev " +
          "libsqlite3-dev tk-dev libc6-dev libbz2-dev " +
          "libsystemd-dev -y", shell=True)
