@@ -6,9 +6,18 @@ import urllib.request, urllib.error, urllib.parse
 from .pi_mgmt import get_output
 from . import wifi_captive_portal
 from subprocess import CalledProcessError, Popen
-from systemd.journal import JournaldLogHandler
+from systemd.journal import JournalHandler
 
 logger = logging.getLogger('goSecure')
+journald_handler = JournalHandler()
+journald_handler.setFormatter(logging.Formatter(
+    '[%(levelname)s] [+] %(message)s'
+))
+logger.addHandler(journald_handler)
+loglevel = default_loglevel()
+logger.setLevel(loglevel)
+logger.info("loglevel set to {}".format(
+    "DEBUG" if loglevel == logging.DEBUG else "INFO"))
 
 
 def get_wifi_list():

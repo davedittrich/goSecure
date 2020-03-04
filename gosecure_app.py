@@ -22,7 +22,7 @@ from scripts.rpi_network_conn import (
 from scripts.vpn_server_conn import (
     set_vpn_params, reset_vpn_params, start_vpn, stop_vpn, restart_vpn,
     vpn_status, vpn_configuration_status)
-from systemd.journal import JournaldLogHandler
+from systemd.journal import JournalHandler
 
 
 def default_loglevel():
@@ -36,7 +36,7 @@ login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
 logger = logging.getLogger('goSecure')
-journald_handler = JournaldLogHandler()
+journald_handler = JournalHandler()
 journald_handler.setFormatter(logging.Formatter(
     '[%(levelname)s] [+] %(message)s'
 ))
