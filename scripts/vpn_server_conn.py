@@ -12,10 +12,6 @@ journald_handler.setFormatter(logging.Formatter(
     '[%(levelname)s] [+] %(message)s'
 ))
 logger.addHandler(journald_handler)
-loglevel = default_loglevel()
-logger.setLevel(loglevel)
-logger.info("loglevel set to {}".format(
-    "DEBUG" if loglevel == logging.DEBUG else "INFO"))
 
 
 def set_vpn_params(vpn_server, user_id, user_psk):

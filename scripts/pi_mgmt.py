@@ -13,10 +13,6 @@ journald_handler.setFormatter(logging.Formatter(
     '[%(levelname)s] [+] %(message)s'
 ))
 logger.addHandler(journald_handler)
-loglevel = default_loglevel()
-logger.setLevel(loglevel)
-logger.info("loglevel set to {}".format(
-    "DEBUG" if loglevel == logging.DEBUG else "INFO"))
 
 
 def get_output(cmd=['echo', 'NO COMMAND SPECIFIED']):
