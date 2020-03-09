@@ -22,6 +22,7 @@ def get_wifi_list():
         wlan_status = get_output(["sudo", "ifup", "wlan0"])
         returncode = 0
     except CalledProcessError as e:
+        wlan_status = []
         returncode = e.returncode
     for line in wlan_status:
         logger.debug(line)
